@@ -1,24 +1,62 @@
-﻿using System;
-using System.Drawing;
-using System.Windows.Forms;
- 
-public class HelloWorld : Form
+﻿using System.Windows.Forms;
+
+namespace Editka
 {
-    static public void Main ()
+    public class MainForm : Form
     {
-        Application.Run (new HelloWorld ());
-    }
- 
-    public HelloWorld ()
-    {
-        Button b = new Button ();
-        b.Text = "Click Me!";
-        b.Click += new EventHandler (Button_Click);
-        Controls.Add (b);
-    }
- 
-    private void Button_Click (object sender, EventArgs e)
-    {
-        MessageBox.Show ("Button Clicked!");
+        public Settings Settings { get; }
+        public Actions Actions { get; }
+
+        public CurrentFile CurrentFile { get; }
+
+        public FileList FileList { get; }
+
+        public Notes Notes { get; }
+
+        public static void Main()
+        {
+            Application.Run(new MainForm());
+        }
+
+        private MainForm()
+        {
+            // Чтобы хоткеи работали:
+            KeyPreview = true;
+
+            Settings = new Settings(this);
+            Actions = new Actions(this);
+            Menu = MenuCreator.MainMenu(this);
+
+            FileList = new FileList
+            {
+                Dock = DockStyle.Fill
+            };
+            CurrentFile = new CurrentFile
+            {
+                Dock = DockStyle.Fill
+            };
+            Notes = new Notes
+            {
+                Dock = DockStyle.Fill
+            };
+
+            var container1 = new SplitContainer
+            {
+                Orientation = Orientation.Vertical,
+                BorderStyle = BorderStyle.Fixed3D,
+                Dock = DockStyle.Fill
+            };
+            var container2 = new SplitContainer
+            {
+                Orientation = Orientation.Vertical,
+                BorderStyle = BorderStyle.Fixed3D,
+                Dock = DockStyle.Fill
+            };
+            container2.Panel1.Controls.Add(CurrentFile);
+            container2.Panel2.Controls.Add(Notes);
+            container1.Panel1.Controls.Add(FileList);
+            container1.Panel2.Controls.Add(container2);
+            Controls.Add(container1);
+        }
     }
 }
