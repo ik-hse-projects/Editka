@@ -7,7 +7,8 @@ namespace Editka
         public Settings Settings { get; }
         public Actions Actions { get; }
 
-        public CurrentFile CurrentFile { get; }
+        public TabControl OpenedTabs { get; }
+        public FileView? CurrentFile => OpenedTabs.SelectedTab as FileView;
 
         public FileList FileList { get; }
 
@@ -27,11 +28,11 @@ namespace Editka
             Actions = new Actions(this);
             Menu = MenuCreator.MainMenu(this);
 
-            FileList = new FileList
+            FileList = new FileList(this)
             {
                 Dock = DockStyle.Fill
             };
-            CurrentFile = new CurrentFile
+            OpenedTabs = new TabControl
             {
                 Dock = DockStyle.Fill
             };
@@ -52,7 +53,7 @@ namespace Editka
                 BorderStyle = BorderStyle.Fixed3D,
                 Dock = DockStyle.Fill
             };
-            container2.Panel1.Controls.Add(CurrentFile);
+            container2.Panel1.Controls.Add(OpenedTabs);
             container2.Panel2.Controls.Add(Notes);
             container1.Panel1.Controls.Add(FileList);
             container1.Panel2.Controls.Add(container2);

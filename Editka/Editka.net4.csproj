@@ -5,6 +5,8 @@
         <TargetFramework>net48</TargetFramework>
         <LangVersion>latest</LangVersion>
         <Nullable>enable</Nullable>
+        <AssemblyName>Editka</AssemblyName>
+        <RootNamespace>Editka</RootNamespace>
     </PropertyGroup>
 
     <ItemGroup>

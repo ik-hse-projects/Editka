@@ -50,6 +50,8 @@ namespace Editka
             {
                 "bold" => Shortcut.CtrlB,
                 "exit" => Shortcut.CtrlQ,
+                "undo" => Shortcut.CtrlZ,
+                "redo" => Shortcut.CtrlShiftZ,
                 _ => Shortcut.None
             };
         }
