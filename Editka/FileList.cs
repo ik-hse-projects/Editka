@@ -1,3 +1,4 @@
+using System.Linq;
 using System.Windows.Forms;
 using Editka.Files;
 
@@ -11,9 +12,14 @@ namespace Editka
             {
                 if (args.Node is OpenedFile openedFile)
                 {
-                    var page = new FileView(root, openedFile);
-                    root.OpenedTabs.TabPages.Add(page);
-                    root.OpenedTabs.SelectedTab = page;
+                    var existing = root.OpenedTabs.FileTabs.SingleOrDefault(tab => tab.File.Id == openedFile.Id);
+                    if (existing == null)
+                    {
+                        var page = new FileView(root, openedFile);
+                        root.OpenedTabs.TabPages.Add(page);
+                        existing = page;
+                    }
+                    root.OpenedTabs.SelectedTab = existing;
                 }
             };
         }

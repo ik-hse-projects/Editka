@@ -13,7 +13,8 @@ namespace Editka
         public FileView(MainForm root, OpenedFile openedFile)
         {
             File = openedFile;
-            Text = openedFile.Filename;
+            Text = openedFile.Filename.Value;
+            openedFile.Filename.Changed += (oldValue, newValue) => Text = newValue;
             _root = root;
             TextBox = new RichTextBox
             {

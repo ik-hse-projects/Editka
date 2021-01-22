@@ -8,8 +8,8 @@ namespace Editka
         public Settings Settings { get; }
         public Actions Actions { get; }
 
-        public TabControl OpenedTabs { get; }
-        public FileView? CurrentFile => OpenedTabs.SelectedTab as FileView;
+        public Tabs OpenedTabs { get; }
+        public FileView? CurrentFile => OpenedTabs.SelectedTab;
 
         public FileList FileList { get; }
 
@@ -34,7 +34,7 @@ namespace Editka
             {
                 Dock = DockStyle.Fill
             };
-            OpenedTabs = new TabControl
+            OpenedTabs = new Tabs
             {
                 Dock = DockStyle.Fill
             };

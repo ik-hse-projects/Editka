@@ -12,10 +12,23 @@ namespace Editka.Files
     /// </remarks>
     public abstract class OpenedFile : TreeNode, IDisposable
     {
+        private static int counter;
+        public readonly int Id;
+        
+        private string? _path;
         public FileStream? File { get; private set; }
-        public string? Path { get; private set; }
 
-        public string Filename => Path ?? "(untitled)";
+        public string? Path
+        {
+            get => _path;
+            private set
+            {
+                _path = value;
+                Filename.Update();
+            }
+        }
+
+        public Computed<string> Filename => new Computed<string>(() => Path ?? "(untitled)");
 
         /// <summary>
         /// Открывает файл о указанному пути
@@ -24,16 +37,17 @@ namespace Editka.Files
         /// Может выкинуть исключение, если не удалось открыть файл!
         /// </exception>
         /// <param name="path">Путь к файлу</param>
-        protected OpenedFile(string path)
+        protected OpenedFile(string path): this()
         {
             File = System.IO.File.Open(path, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.Read);
             Path = path;
-            Text = Filename;
         }
 
         protected OpenedFile()
         {
-            Text = Filename;
+            Id = counter++;
+            Text = Filename.Value;
+            Filename.Changed += (oldValue, newValue) => Text = newValue;
         }
 
         protected abstract RichTextBoxStreamType StreamType { get; }
@@ -101,7 +115,6 @@ namespace Editka.Files
                 {
                     File = System.IO.File.Open(path, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.Read);
                     Path = path;
-                    Text = Filename;
                 }
                 catch (Exception e)
                 {

@@ -67,10 +67,7 @@ namespace Editka
 
         public void Save(object sender, EventArgs e)
         {
-            if (_root.OpenedTabs.SelectedTab is FileView fileView)
-            {
-                fileView.Save();
-            }
+            _root.CurrentFile?.Save();
         }
 
         public void Undo(object sender, EventArgs e)
