@@ -16,13 +16,33 @@ namespace Editka
 
         public void Exit(object sender, EventArgs eventArgs)
         {
-            // TODO: Save everything and show pretty dialog
-            Environment.Exit(0);
+            // TODO: Check for unsaved changes
+            var dialog = MessageBox.Show("Сохранить все изменения?", "Выход", MessageBoxButtons.YesNoCancel,
+                MessageBoxIcon.Question);
+            switch (dialog)
+            {
+                case DialogResult.Yes:
+                    SaveAll(sender, eventArgs);
+                    Environment.Exit(0);
+                    break;
+                case DialogResult.No:
+                    Environment.Exit(0);
+                    break;
+            }
         }
 
         public void New(object sender, EventArgs e)
         {
-            _root.FileList.Nodes.Add(new OpenedFile());
+            var dialog = MessageBox.Show("Использовать возможности RTF? Иначе будет создан обычный текстовый файл.",
+                "Новый файл", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+            if (dialog == DialogResult.Yes)
+            {
+                _root.FileList.Nodes.Add(new Rich());
+            }
+            else
+            {
+                _root.FileList.Nodes.Add(new Plain());
+            }
         }
 
         public void Open(object sender, EventArgs e)
@@ -110,7 +130,18 @@ namespace Editka
                 return;
             }
 
+            if (!(_root.CurrentFile.File is Rich))
+            {
+                MessageBox.Show("Нельзя использовать форматирование в обычных файлах");
+                return;
+            }
+
             var font = _root.CurrentFile.TextBox.SelectionFont;
+            if (font == null)
+            {
+                return;
+            }
+            // Напоминаю, что XOR с единицей инвертирует бит, т.е. переключает стиль.
             var newStyle = font.Style ^ mask;
             _root.CurrentFile.TextBox.SelectionFont = new Font(font.FontFamily, font.Size, newStyle);
         }

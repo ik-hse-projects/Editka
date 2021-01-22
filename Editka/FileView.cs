@@ -1,3 +1,4 @@
+using System.Drawing;
 using System.Windows.Forms;
 using Editka.Files;
 
@@ -19,15 +20,17 @@ namespace Editka
                 Dock = DockStyle.Fill,
                 AcceptsTab = true,
                 ContextMenu = MenuCreator.ContextMenu(_root),
-                MaxLength = 5*1024*1024/2, // 5Mb of UTF-16.
+                MaxLength = 5 * 1024 * 1024 / 2, // 5Mb of UTF-16.
                 WordWrap = false,
+                Font = new Font(FontFamily.GenericMonospace, 12)
             };
+            File.FillTextbox(TextBox);
             Controls.Add(TextBox);
         }
 
         public void Save()
         {
-            throw new System.NotImplementedException();
+            File.LoadTextbox(TextBox);
         }
     }
 }

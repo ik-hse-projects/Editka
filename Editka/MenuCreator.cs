@@ -83,7 +83,6 @@ namespace Editka
                 root.Settings.BindShortcut("strikethrough", _formatButtons[3]);
             }
 
-            // TODO: Disable when non-rtf file opened
             items.AddRange(_formatButtons);
         }
     }
