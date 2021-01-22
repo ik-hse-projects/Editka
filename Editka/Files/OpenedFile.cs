@@ -28,7 +28,7 @@ namespace Editka.Files
             }
         }
 
-        public Computed<string> Filename => new Computed<string>(() => Path ?? "(untitled)");
+        public Computed<string> Filename;
 
         /// <summary>
         /// Открывает файл о указанному пути
@@ -46,8 +46,9 @@ namespace Editka.Files
         protected OpenedFile()
         {
             Id = counter++;
-            Text = Filename.Value;
+            Filename = new Computed<string>(() => Path ?? "(untitled)");
             Filename.Changed += (oldValue, newValue) => Text = newValue;
+            Text = Filename.Value;
         }
 
         protected abstract RichTextBoxStreamType StreamType { get; }

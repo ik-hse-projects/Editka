@@ -9,12 +9,11 @@ namespace Editka
         private MainForm _root;
         public OpenedFile File;
         public RichTextBox TextBox;
+        public NotifyChanged<bool> Changed = new NotifyChanged<bool>(false);
 
         public FileView(MainForm root, OpenedFile openedFile)
         {
             File = openedFile;
-            Text = openedFile.Filename.Value;
-            openedFile.Filename.Changed += (oldValue, newValue) => Text = newValue;
             _root = root;
             TextBox = new RichTextBox
             {
@@ -27,11 +26,33 @@ namespace Editka
             };
             File.FillTextbox(TextBox);
             Controls.Add(TextBox);
+
+            TextBox.TextChanged += (sender, args) => Changed.Value = true;
+            Changed.Changed += (oldValue, newValue) => UpdateText();
+            openedFile.Filename.Changed += (oldValue, newValue) => UpdateText();
+            UpdateText();
         }
 
         public void Save()
         {
             File.LoadTextbox(TextBox);
+            Changed.Value = false;
+        }
+
+        private void UpdateText()
+        {
+            Text = Changed.Value ? $"{File.Filename.Value}*" : File.Filename.Value;
+            var idx = _root.OpenedTabs.TabPages.IndexOf(this);
+            if (idx >= 0)
+            {
+                _root.OpenedTabs.Invalidate(_root.OpenedTabs.GetTabRect(idx));
+            }
+            else
+            {
+                _root.OpenedTabs.Invalidate();
+            }
+
+            _root.OpenedTabs.Update();
         }
     }
 }

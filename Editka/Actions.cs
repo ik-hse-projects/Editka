@@ -1,5 +1,6 @@
 using System;
 using System.Drawing;
+using System.Linq;
 using System.Windows.Forms;
 using Editka.Files;
 
@@ -16,7 +17,11 @@ namespace Editka
 
         public void Exit(object sender, EventArgs eventArgs)
         {
-            // TODO: Check for unsaved changes
+            if (_root.OpenedTabs.FileTabs.All(tab => !tab.Changed.Value))
+            {
+                Environment.Exit(0);
+            }
+
             var dialog = MessageBox.Show("Сохранить все изменения?", "Выход", MessageBoxButtons.YesNoCancel,
                 MessageBoxIcon.Question);
             switch (dialog)
@@ -138,6 +143,7 @@ namespace Editka
             {
                 return;
             }
+
             // Напоминаю, что XOR с единицей инвертирует бит, т.е. переключает стиль.
             var newStyle = font.Style ^ mask;
             _root.CurrentFile.TextBox.SelectionFont = new Font(font.FontFamily, font.Size, newStyle);

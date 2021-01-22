@@ -18,8 +18,9 @@ namespace Editka
                     return;
                 }
 
-                Changed?.Invoke(_value, value);
+                var old = _value;
                 _value = value;
+                Changed?.Invoke(old, value);
             }
         }
 

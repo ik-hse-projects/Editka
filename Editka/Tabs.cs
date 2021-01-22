@@ -28,7 +28,20 @@ namespace Editka
                 {
                     if (GetTabRect(i).Contains(click.Location))
                     {
-                        // TODO: Ask for save
+                        if (TabPages[i] is FileView fileView && fileView.Changed.Value)
+                        {
+                            var dialog = MessageBox.Show("Сохранить изменения?", "Закрыть вкладку",
+                                MessageBoxButtons.YesNoCancel);
+                            switch (dialog)
+                            {
+                                case DialogResult.Yes:
+                                    fileView.Save();
+                                    break;
+                                case DialogResult.Cancel:
+                                    return;
+                            }
+                        }
+
                         TabPages.RemoveAt(i);
                         return;
                     }

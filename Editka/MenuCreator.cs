@@ -26,14 +26,12 @@ namespace Editka
                 menu.MenuItems.Add(edit);
             }
 
-            // TODO: Disable when non-rtf file opened
             {
                 var format = new MenuItem("Формат");
                 AddFormatButtons(format.MenuItems, root);
                 menu.MenuItems.Add(format);
             }
 
-            // TODO: Disable when non-compilable file opened
             {
                 var csharp = new MenuItem("C#");
                 root.Settings.BindShortcut("format", csharp.MenuItems.Add("Отформатировать", root.Actions.Format));
