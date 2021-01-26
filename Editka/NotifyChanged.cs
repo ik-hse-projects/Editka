@@ -1,10 +1,8 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Drawing.Imaging;
 using System.Linq;
-using System.Windows.Forms;
 
 namespace Editka
 {
@@ -39,54 +37,6 @@ namespace Editka
         public NotifyChanged(T value)
         {
             _value = value;
-        }
-    }
-
-    public static class NotifyChangedExtensions
-    {
-        public static NumericUpDown GetControl(this NotifyChanged<int> self)
-        {
-            var result = new NumericUpDown
-            {
-                Value = self.Value,
-            };
-            result.ValueChanged += (sender, args) => self.Value = (int) result.Value;
-            self.Changed += (value, newValue) => result.Value = newValue;
-            return result;
-        }
-
-        public static CheckBox GetControl(this NotifyChanged<bool> self)
-        {
-            var result = new CheckBox
-            {
-                Checked = self.Value,
-            };
-            result.CheckedChanged += (sender, args) => self.Value = result.Checked;
-            self.Changed += (value, newValue) => result.Checked = newValue;
-            return result;
-        }
-
-        public static Button GetControl(this NotifyChanged<Color> self)
-        {
-            var result = new Button
-            {
-                Text = "Выбрать цвет",
-                BackColor = self.Value
-            };
-            result.Click += (sender, args) =>
-            {
-                var dialog = new ColorDialog
-                {
-                    Color = self.Value,
-                };
-                var result = dialog.ShowDialog();
-                if (result == DialogResult.OK)
-                {
-                    self.Value = dialog.Color;
-                }
-            };
-            self.Changed += (oldValue, newValue) => result.BackColor = newValue;
-            return result;
         }
     }
 
@@ -128,14 +78,16 @@ namespace Editka
             }
         }
 
-        public NotifyChanged<TVal> Get(TKey key)
+        public NotifyChanged<TVal> Get(TKey key) => GetOrDefault(key, default);
+        
+        public NotifyChanged<TVal> GetOrDefault(TKey key, TVal fallback)
         {
             if (_dictionary.TryGetValue(key, out var result))
             {
                 return result;
             }
 
-            result = new NotifyChanged<TVal>();
+            result = new NotifyChanged<TVal>(fallback);
             _dictionary[key] = result;
             return result;
         }
@@ -151,6 +103,8 @@ namespace Editka
         {
             return GetEnumerator();
         }
+
+        public IEnumerable<KeyValuePair<TKey, NotifyChanged<TVal>>> Notifiable() => _dictionary;
     }
 
     public class Computed<T>

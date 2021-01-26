@@ -14,6 +14,23 @@ namespace Editka
             };
             close.Click += (sender, args) => Close();
 
+            var hotkeys = new TableLayoutPanel
+            {
+                AutoSize = true,
+                Location = new Point(5, 15),
+            };
+            int row = 1;
+            foreach (var pair in root.Settings.Hotkeys.Notifiable())
+            {
+                hotkeys.Controls.Add(pair.Value.GetControl(), 1, row);
+                hotkeys.Controls.Add(new Label
+                {
+                    Text = pair.Key,
+                    AutoSize = true
+                }, 2, row);
+                row++;
+            }
+
             Controls.Add(new FlowLayoutPanel
             {
                 AutoScroll = true,
@@ -72,6 +89,12 @@ namespace Editka
                                 }
                             }
                         }
+                    },
+                    new GroupBox
+                    {
+                        Text = "Горячие клавиши",
+                        AutoSize = true,
+                        Controls = {hotkeys},
                     },
                     close
                 }
