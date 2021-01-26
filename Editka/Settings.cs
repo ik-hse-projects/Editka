@@ -11,6 +11,10 @@ namespace Editka
         private readonly ColorConverter _colorConverter = new ColorConverter();
         private readonly Dictionary<string, string> _colors = new Dictionary<string, string>();
 
+        public readonly NotifyChanged<int> AutosaveSeconds = new NotifyChanged<int>();
+        public readonly NotifyChanged<bool> SaveOnFocus = new NotifyChanged<bool>();
+        public readonly NotifyChanged<bool> EnableHistory = new NotifyChanged<bool>();
+
         public Settings(MainForm root)
         {
             _root = root;
@@ -37,6 +41,25 @@ namespace Editka
         private readonly Dictionary<string, string> _hotkeys = new Dictionary<string, string>();
         private readonly Dictionary<string, MenuItem> _binded = new Dictionary<string, MenuItem>();
 
+        public static IReadOnlyDictionary<string, Shortcut> DefaultShortcuts = new Dictionary<string, Shortcut>
+        {
+            {"save", Shortcut.CtrlS},
+            {"save_all", Shortcut.CtrlShiftS},
+            {"open", Shortcut.CtrlO},
+            {"new", Shortcut.CtrlN},
+            {"exit", Shortcut.CtrlQ},
+            {"undo", Shortcut.CtrlZ},
+            {"redo", Shortcut.CtrlShiftZ},
+            {"format", Shortcut.CtrlL},
+            {"build", Shortcut.CtrlF9},
+            {"run", Shortcut.CtrlShiftF9},
+            {"settings", Shortcut.CtrlShiftP},
+            {"bold", Shortcut.CtrlB},
+            {"cursive", Shortcut.CtrlI},
+            {"underline", Shortcut.CtrlU},
+            {"strikethrough", Shortcut.CtrlT},
+        };
+
         public Shortcut GetShortcut(string name)
         {
             if (_hotkeys.TryGetValue(name, out var value)
@@ -45,15 +68,12 @@ namespace Editka
                 return shortcut;
             }
 
-            // TODO: default hotkeys
-            return name switch
+            if (DefaultShortcuts.TryGetValue(name, out var fallback))
             {
-                "bold" => Shortcut.CtrlB,
-                "exit" => Shortcut.CtrlQ,
-                "undo" => Shortcut.CtrlZ,
-                "redo" => Shortcut.CtrlShiftZ,
-                _ => Shortcut.None
-            };
+                return fallback;
+            }
+
+            return Shortcut.None;
         }
 
         public void BindShortcut(string name, MenuItem item)

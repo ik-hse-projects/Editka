@@ -97,7 +97,7 @@ namespace Editka
 
         public void Settings(object sender, EventArgs e)
         {
-            throw new NotImplementedException();
+            new SettingsDialog(_root).ShowDialog(_root);
         }
 
         public void SelectAll(object sender, EventArgs e)

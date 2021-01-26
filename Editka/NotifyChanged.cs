@@ -1,4 +1,5 @@
 using System;
+using System.Windows.Forms;
 
 namespace Editka
 {
@@ -33,6 +34,43 @@ namespace Editka
         public NotifyChanged(T value)
         {
             _value = value;
+        }
+    }
+
+    public static class NotifyChangedExtensions
+    {
+        public static NumericUpDown GetControl(this NotifyChanged<int> self)
+        {
+            var result = new NumericUpDown
+            {
+                Value = self.Value,
+            };
+            result.ValueChanged += (sender, args) => self.Value = (int) result.Value;
+            self.Changed += (value, newValue) =>
+            {
+                if (newValue != result.Value)
+                {
+                    result.Value = newValue;
+                }
+            };
+            return result;
+        }
+        
+        public static CheckBox GetControl(this NotifyChanged<bool> self)
+        {
+            var result = new CheckBox
+            {
+                Checked = self.Value,
+            };
+            result.CheckedChanged += (sender, args) => self.Value = result.Checked;
+            self.Changed += (value, newValue) =>
+            {
+                if (newValue != result.Checked)
+                {
+                    result.Checked = newValue;
+                }
+            };
+            return result;
         }
     }
 
