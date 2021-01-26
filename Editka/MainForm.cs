@@ -13,7 +13,7 @@ namespace Editka
 
         public FileList FileList { get; }
 
-        public ColorScheme Theme { get; } = new ColorScheme();
+        public ColorScheme Theme { get; }
 
         public Notes Notes { get; }
 
@@ -31,6 +31,7 @@ namespace Editka
             Settings = new Settings(this);
             Actions = new Actions(this);
             Menu = MenuCreator.MainMenu(this);
+            Theme = new ColorScheme(this);
             Theme.ApplyTo(this);
 
             FileList = new FileList(this)

@@ -4,6 +4,15 @@ namespace Editka
 {
     public class ColorScheme
     {
+        private readonly MainForm _root;
+
+        public ColorScheme(MainForm root)
+        {
+            _root = root;
+            _root.Settings.Colors.Get("foreground").Changed += (_, __) => ApplyTo(_root);
+            _root.Settings.Colors.Get("background").Changed += (_, __) => ApplyTo(_root);
+        }
+
         public void ApplyTo(Control control)
         {
             foreach (Control children in control.Controls)
@@ -13,11 +22,9 @@ namespace Editka
 
             control.ControlAdded -= OnControlAdded;
             control.ControlAdded += OnControlAdded;
-            
-            var back = control.BackColor;
-            var fore = control.ForeColor;
-            control.BackColor = fore;
-            control.ForeColor = back;
+
+            control.BackColor = _root.Settings.Colors.Get("background").Value;
+            control.ForeColor = _root.Settings.Colors.Get("foreground").Value;
         }
 
         private void OnControlAdded(object sender, ControlEventArgs e)

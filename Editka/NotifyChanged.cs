@@ -1,4 +1,9 @@
 using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Drawing;
+using System.Drawing.Imaging;
+using System.Linq;
 using System.Windows.Forms;
 
 namespace Editka
@@ -46,16 +51,10 @@ namespace Editka
                 Value = self.Value,
             };
             result.ValueChanged += (sender, args) => self.Value = (int) result.Value;
-            self.Changed += (value, newValue) =>
-            {
-                if (newValue != result.Value)
-                {
-                    result.Value = newValue;
-                }
-            };
+            self.Changed += (value, newValue) => result.Value = newValue;
             return result;
         }
-        
+
         public static CheckBox GetControl(this NotifyChanged<bool> self)
         {
             var result = new CheckBox
@@ -63,14 +62,94 @@ namespace Editka
                 Checked = self.Value,
             };
             result.CheckedChanged += (sender, args) => self.Value = result.Checked;
-            self.Changed += (value, newValue) =>
+            self.Changed += (value, newValue) => result.Checked = newValue;
+            return result;
+        }
+
+        public static Button GetControl(this NotifyChanged<Color> self)
+        {
+            var result = new Button
             {
-                if (newValue != result.Checked)
+                Text = "Выбрать цвет",
+                BackColor = self.Value
+            };
+            result.Click += (sender, args) =>
+            {
+                var dialog = new ColorDialog
                 {
-                    result.Checked = newValue;
+                    Color = self.Value,
+                };
+                var result = dialog.ShowDialog();
+                if (result == DialogResult.OK)
+                {
+                    self.Value = dialog.Color;
                 }
             };
+            self.Changed += (oldValue, newValue) => result.BackColor = newValue;
             return result;
+        }
+    }
+
+    public class NotifiableDictionary<TKey, TVal> : IEnumerable<KeyValuePair<TKey, TVal>>
+    {
+        private readonly Dictionary<TKey, NotifyChanged<TVal>>
+            _dictionary = new Dictionary<TKey, NotifyChanged<TVal>>();
+
+        public bool TryGetValue(TKey key, out TVal value)
+        {
+            var exists = _dictionary.TryGetValue(key, out var result);
+            value = exists ? result.Value : default;
+            return exists;
+        }
+
+        public event PropertyChanged<KeyValuePair<TKey, TVal>>? Changed;
+
+        public TVal this[TKey key]
+        {
+            get => _dictionary[key].Value;
+            set
+            {
+                if (_dictionary.TryGetValue(key, out NotifyChanged<TVal> existing))
+                {
+                    if ((existing.Value == null && value == null) || (value != null && value.Equals(existing.Value)))
+                    {
+                        return;
+                    }
+                }
+                else
+                {
+                    existing = new NotifyChanged<TVal>();
+                    _dictionary[key] = existing;
+                }
+
+                Changed?.Invoke(new KeyValuePair<TKey, TVal>(key, existing.Value),
+                    new KeyValuePair<TKey, TVal>(key, value));
+                existing.Value = value;
+            }
+        }
+
+        public NotifyChanged<TVal> Get(TKey key)
+        {
+            if (_dictionary.TryGetValue(key, out var result))
+            {
+                return result;
+            }
+
+            result = new NotifyChanged<TVal>();
+            _dictionary[key] = result;
+            return result;
+        }
+
+        public IEnumerator<KeyValuePair<TKey, TVal>> GetEnumerator()
+        {
+            return _dictionary
+                .Select(x => new KeyValuePair<TKey, TVal>(x.Key, x.Value.Value))
+                .GetEnumerator();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
         }
     }
 
