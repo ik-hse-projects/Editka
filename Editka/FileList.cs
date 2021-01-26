@@ -19,7 +19,23 @@ namespace Editka
                         root.OpenedTabs.TabPages.Add(page);
                         existing = page;
                     }
+
                     root.OpenedTabs.SelectedTab = existing;
+                }
+            };
+            NodeMouseClick += (sender, args) =>
+            {
+                if (args.Button == MouseButtons.Right && args.Node is OpenedFile openedFile)
+                {
+                    var existing = root.OpenedTabs.FileTabs.SingleOrDefault(tab => tab.File.Id == openedFile.Id);
+                    if (existing != null)
+                    {
+                        existing.Save();
+                        root.OpenedTabs.TabPages.Remove(existing);
+                    }
+
+                    args.Node.Remove();
+                    openedFile.Dispose();
                 }
             };
         }

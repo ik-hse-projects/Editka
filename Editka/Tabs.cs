@@ -40,6 +40,7 @@ namespace Editka
                                 case DialogResult.Cancel:
                                     return;
                             }
+                            fileView.Dispose();
                         }
 
                         TabPages.RemoveAt(i);

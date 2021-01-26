@@ -15,5 +15,7 @@ namespace Editka.Files
         }
 
         protected override RichTextBoxStreamType StreamType => RichTextBoxStreamType.RichText;
+
+        protected override string SuggestedExtension() => ".cs";
     }
 }

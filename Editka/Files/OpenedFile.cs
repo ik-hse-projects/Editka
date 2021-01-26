@@ -51,6 +51,8 @@ namespace Editka.Files
             Text = Filename.Value;
         }
 
+        
+        protected abstract string SuggestedExtension();
         protected abstract RichTextBoxStreamType StreamType { get; }
 
         public void FillTextbox(RichTextBox textBox)
@@ -75,7 +77,7 @@ namespace Editka.Files
 
         public bool LoadTextbox(RichTextBox textBox, bool ask = false)
         {
-            var file = GetFile(".txt", ask);
+            var file = GetFile(SuggestedExtension(), ask);
             if (file == null)
             {
                 return false;
@@ -110,6 +112,7 @@ namespace Editka.Files
             var dialog = new OpenFileDialog
             {
                 DefaultExt = extension,
+                AddExtension = true,
                 CheckFileExists = false,
                 CheckPathExists = true,
                 Multiselect = false,
@@ -157,6 +160,7 @@ namespace Editka.Files
                     return extension switch
                     {
                         ".rtf" => new Rich(dialog.FileName),
+                        ".cs" => new CSharp(dialog.FileName),
                         _ => new Plain(dialog.FileName)
                     };
                 }

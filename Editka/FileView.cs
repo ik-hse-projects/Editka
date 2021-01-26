@@ -1,3 +1,4 @@
+using System;
 using System.Drawing;
 using System.Windows.Forms;
 using Editka.Files;
@@ -39,6 +40,7 @@ namespace Editka
             {
                 return;
             }
+
             if (File.LoadTextbox(TextBox, ask))
             {
                 Changed.Value = false;
@@ -59,6 +61,16 @@ namespace Editka
             }
 
             _root.OpenedTabs.Update();
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                File.Dispose();
+            }
+
+            base.Dispose(disposing);
         }
     }
 }
