@@ -1,6 +1,7 @@
 using System;
 using System.Drawing;
 using System.Linq;
+using System.Threading;
 using System.Windows.Forms;
 using Editka.Files;
 
@@ -19,7 +20,8 @@ namespace Editka
         {
             if (_root.OpenedTabs.FileTabs.All(tab => !tab.Changed.Value))
             {
-                Environment.Exit(0);
+                _root.Close();
+                return;
             }
 
             var dialog = MessageBox.Show("Сохранить все изменения?", "Выход", MessageBoxButtons.YesNoCancel,
@@ -28,15 +30,17 @@ namespace Editka
             {
                 case DialogResult.Yes:
                     SaveAll(sender, eventArgs);
-                    Environment.Exit(0);
+                    _root.Close();
                     break;
                 case DialogResult.No:
-                    Environment.Exit(0);
+                    _root.Close();
                     break;
             }
         }
 
-        public void New(object sender, EventArgs e)
+        public void New(object sender, EventArgs e) => New();
+
+        public void New()
         {
             var dialog = MessageBox.Show("Использовать возможности RTF? Иначе будет создан обычный текстовый файл.",
                 "Новый файл", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
@@ -50,13 +54,27 @@ namespace Editka
             }
         }
 
-        public void Open(object sender, EventArgs e)
+        public void Open(object sender, EventArgs e) => Open();
+
+        public void Open()
         {
             var file = OpenedFile.AskOpen();
             if (file != null)
             {
                 _root.FileList.Nodes.Add(file);
             }
+        }
+
+        public void OpenInNewWindow(object sender, EventArgs eventArgs)
+        {
+            var window = NewWindow();
+            window.Actions.Open();
+        }
+
+        public void CreateInNewWindow(object sender, EventArgs eventArgs)
+        {
+            var window = NewWindow();
+            window.Actions.New();
         }
 
         public void SaveAll(object sender, EventArgs e)
@@ -172,6 +190,18 @@ namespace Editka
         public void Strikethrough(object sender, EventArgs e)
         {
             UpdateStyle(FontStyle.Strikeout);
+        }
+
+        public void NewWindow(object sender, EventArgs eventArgs)
+        {
+            NewWindow();
+        }
+
+        public MainForm NewWindow()
+        {
+            var window = new MainForm();
+            MultiFormContext.Context.AddForm(window);
+            return window;
         }
     }
 }

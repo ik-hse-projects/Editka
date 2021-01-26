@@ -17,13 +17,7 @@ namespace Editka
 
         public Notes Notes { get; }
 
-        [STAThread]
-        public static void Main()
-        {
-            Application.Run(new MainForm());
-        }
-
-        private MainForm()
+        internal MainForm()
         {
             // Чтобы хоткеи работали:
             KeyPreview = true;

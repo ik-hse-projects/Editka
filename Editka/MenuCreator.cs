@@ -14,8 +14,13 @@ namespace Editka
                 root.Settings.BindShortcut("save", file.MenuItems.Add("Сохранить", root.Actions.Save));
                 root.Settings.BindShortcut("save_all", file.MenuItems.Add("Сохранить все", root.Actions.SaveAll));
                 root.Settings.BindShortcut("open", file.MenuItems.Add("Открыть", root.Actions.Open));
+                root.Settings.BindShortcut("open_in_new",
+                    file.MenuItems.Add("Открыть в новом окне", root.Actions.OpenInNewWindow));
                 root.Settings.BindShortcut("new", file.MenuItems.Add("Создать", root.Actions.New));
+                root.Settings.BindShortcut("create_in_new",
+                    file.MenuItems.Add("Создать в новом окне", root.Actions.CreateInNewWindow));
                 root.Settings.BindShortcut("exit", file.MenuItems.Add("Выйти", root.Actions.Exit));
+                root.Settings.BindShortcut("new_window", file.MenuItems.Add("Новое окно", root.Actions.NewWindow));
                 menu.MenuItems.Add(file);
             }
 
