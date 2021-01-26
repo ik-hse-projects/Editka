@@ -61,11 +61,16 @@ namespace Editka
 
         public void SaveAll(object sender, EventArgs e)
         {
+            SaveAll();
+        }
+
+        public void SaveAll(bool ask = true)
+        {
             foreach (TabPage tabPage in _root.OpenedTabs.TabPages)
             {
                 if (tabPage is FileView fileView)
                 {
-                    fileView.Save();
+                    fileView.Save(ask);
                 }
             }
         }

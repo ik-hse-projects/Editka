@@ -31,6 +31,7 @@ namespace Editka
             Settings = new Settings(this);
             Actions = new Actions(this);
             Menu = MenuCreator.MainMenu(this);
+            Autosave.Init(this);
             Theme = new ColorScheme(this);
             Theme.ApplyTo(this);
 

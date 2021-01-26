@@ -73,12 +73,12 @@ namespace Editka.Files
             }
         }
 
-        public void LoadTextbox(RichTextBox textBox)
+        public bool LoadTextbox(RichTextBox textBox, bool ask = false)
         {
-            var file = GetFile(".txt");
+            var file = GetFile(".txt", ask);
             if (file == null)
             {
-                return;
+                return false;
             }
 
             try
@@ -86,20 +86,27 @@ namespace Editka.Files
                 file.SetLength(0);
                 textBox.SaveFile(File, StreamType);
                 file.Flush(true);
+                return true;
             }
             catch (Exception e)
             {
                 MessageBox.Show(e.ToString(), "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return false;
             }
         }
 
-        private FileStream? GetFile(string extension)
+        private FileStream? GetFile(string extension, bool ask)
         {
             if (File != null)
             {
                 return File;
             }
 
+            if (!ask)
+            {
+                return null;
+            }
+            
             var dialog = new OpenFileDialog
             {
                 DefaultExt = extension,

@@ -33,10 +33,16 @@ namespace Editka
             UpdateText();
         }
 
-        public void Save()
+        public void Save(bool ask = true)
         {
-            File.LoadTextbox(TextBox);
-            Changed.Value = false;
+            if (!Changed.Value)
+            {
+                return;
+            }
+            if (File.LoadTextbox(TextBox, ask))
+            {
+                Changed.Value = false;
+            }
         }
 
         private void UpdateText()
