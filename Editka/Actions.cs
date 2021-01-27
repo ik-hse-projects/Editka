@@ -1,7 +1,7 @@
 using System;
+using System.ComponentModel;
 using System.Drawing;
 using System.Linq;
-using System.Threading;
 using System.Windows.Forms;
 using Editka.Files;
 
@@ -18,10 +18,22 @@ namespace Editka
 
         public void Exit(object sender, EventArgs eventArgs)
         {
+            _root.Close();
+        }
+
+        public void Exit(object sender, CancelEventArgs eventArgs)
+        {
+            if (!Exit())
+            {
+                eventArgs.Cancel = true;
+            }
+        }
+
+        public bool Exit()
+        {
             if (_root.OpenedTabs.FileTabs.All(tab => !tab.Changed.Value))
             {
-                _root.Close();
-                return;
+                return true;
             }
 
             var dialog = MessageBox.Show("Сохранить все изменения?", "Выход", MessageBoxButtons.YesNoCancel,
@@ -29,12 +41,12 @@ namespace Editka
             switch (dialog)
             {
                 case DialogResult.Yes:
-                    SaveAll(sender, eventArgs);
-                    _root.Close();
-                    break;
+                    SaveAll();
+                    return true;
                 case DialogResult.No:
-                    _root.Close();
-                    break;
+                    return true;
+                default:
+                    return false;
             }
         }
 
@@ -46,11 +58,11 @@ namespace Editka
                 "Новый файл", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
             if (dialog == DialogResult.Yes)
             {
-                _root.FileList.Nodes.Add(new Rich());
+                _root.FileList.TreeView.Nodes.Add(new Rich());
             }
             else
             {
-                _root.FileList.Nodes.Add(new Plain());
+                _root.FileList.TreeView.Nodes.Add(new Plain());
             }
         }
 
@@ -61,7 +73,7 @@ namespace Editka
             var file = OpenedFile.AskOpen();
             if (file != null)
             {
-                _root.FileList.Nodes.Add(file);
+                _root.FileList.TreeView.Nodes.Add(file);
             }
         }
 

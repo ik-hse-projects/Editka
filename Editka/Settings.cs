@@ -2,37 +2,18 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
+using System.Xml.Serialization;
 
 namespace Editka
 {
     public class Settings
     {
-        private readonly MainForm _root;
-        public readonly NotifiableDictionary<string, Color> Colors = new NotifiableDictionary<string, Color>();
+        [XmlIgnore] private readonly MainForm _root;
 
+        public readonly NotifiableDictionary<string, Color> Colors = new NotifiableDictionary<string, Color>();
         public readonly NotifyChanged<int> AutosaveSeconds = new NotifyChanged<int>();
         public readonly NotifyChanged<bool> SaveOnFocus = new NotifyChanged<bool>();
         public readonly NotifyChanged<bool> EnableHistory = new NotifyChanged<bool>();
-
-        public Settings(MainForm root)
-        {
-            _root = root;
-        }
-
-        public Color GetColor(string name)
-        {
-            if (Colors.TryGetValue(name, out var value))
-            {
-                return value;
-            }
-
-            // TODO: Default theme
-            return name switch
-            {
-                _ => Color.Black
-            };
-        }
-
         public readonly NotifiableDictionary<string, Shortcut> Hotkeys = new NotifiableDictionary<string, Shortcut>();
 
         private static readonly IReadOnlyDictionary<string, Shortcut> DefaultShortcuts =
@@ -54,6 +35,30 @@ namespace Editka
                 {"underline", Shortcut.CtrlU},
                 {"strikethrough", Shortcut.CtrlT},
             };
+        
+        // For xml serialization. Do not forget to set _root after.
+        private Settings()
+        {
+        }
+
+        public Settings(MainForm root): this()
+        {
+            _root = root;
+        }
+
+        public Color GetColor(string name)
+        {
+            if (Colors.TryGetValue(name, out var value))
+            {
+                return value;
+            }
+
+            // TODO: Default theme
+            return name switch
+            {
+                _ => Color.Black
+            };
+        }
 
         public void BindShortcut(string name, MenuItem item)
         {

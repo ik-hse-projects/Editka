@@ -1,43 +1,59 @@
+using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
+using System.Xml.Serialization;
 using Editka.Files;
 
 namespace Editka
 {
-    public class FileList : TreeView
+    public class FileList : IEnumerable<OpenedFile>
     {
-        public FileList(MainForm root)
+        [XmlIgnore] private MainForm _root;
+
+        [XmlIgnore] public readonly TreeView TreeView;
+
+        // For xml serialization. Do not forget to set _root after.
+        private FileList()
         {
-            NodeMouseDoubleClick += (sender, args) =>
-            {
-                if (args.Node is OpenedFile openedFile)
-                {
-                    var existing = root.OpenedTabs.FileTabs.SingleOrDefault(tab => tab.File.Id == openedFile.Id);
-                    if (existing == null)
-                    {
-                        var page = new FileView(root, openedFile);
-                        root.OpenedTabs.TabPages.Add(page);
-                        existing = page;
-                    }
+            TreeView = new TreeView {Dock = DockStyle.Fill};
+            TreeView.NodeMouseDoubleClick += OnTreeNodeMouseClickEventHandler;
+            TreeView.NodeMouseClick += OnNodeMouseClickEventHandler;
+        }
 
-                    root.OpenedTabs.SelectedTab = existing;
-                }
-            };
-            NodeMouseClick += (sender, args) =>
-            {
-                if (args.Button == MouseButtons.Right && args.Node is OpenedFile openedFile)
-                {
-                    var existing = root.OpenedTabs.FileTabs.SingleOrDefault(tab => tab.File.Id == openedFile.Id);
-                    if (existing != null)
-                    {
-                        existing.Save();
-                        root.OpenedTabs.TabPages.Remove(existing);
-                    }
+        public FileList(MainForm root) : this()
+        {
+            _root = root;
+        }
 
-                    args.Node.Remove();
-                    openedFile.Dispose();
-                }
-            };
+        void OnTreeNodeMouseClickEventHandler(object sender, TreeNodeMouseClickEventArgs args)
+        {
+            if (args.Node is OpenedFile openedFile)
+            {
+                _root.OpenedTabs.Open(openedFile);
+            }
+        }
+
+        void OnNodeMouseClickEventHandler(object sender, TreeNodeMouseClickEventArgs args)
+        {
+            if (args.Button == MouseButtons.Right && args.Node is OpenedFile openedFile)
+            {
+                openedFile.Opened?.Close();
+                openedFile.Dispose();
+            }
+
+            args.Node.Remove();
+        }
+
+        public IEnumerator<OpenedFile> GetEnumerator()
+        {
+            return TreeView.Nodes.OfType<OpenedFile>().GetEnumerator();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
         }
     }
 }

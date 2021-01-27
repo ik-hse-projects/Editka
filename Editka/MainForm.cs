@@ -1,11 +1,15 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Windows.Forms;
+using System.Xml.Serialization;
 
 namespace Editka
 {
     public class MainForm : Form
     {
-        public Settings Settings { get; }
+        public State State;
+
+        public Settings Settings => State.Settings;
         public Actions Actions { get; }
 
         public Tabs OpenedTabs { get; }
@@ -22,18 +26,17 @@ namespace Editka
             // Чтобы хоткеи работали:
             KeyPreview = true;
 
-            Settings = new Settings(this);
+            State = new State(
+                new Settings(this),
+                new List<OpenedFileInfo>()
+            );
+
+            FileList = new FileList(this);
             Actions = new Actions(this);
             Menu = MenuCreator.MainMenu(this);
             Autosave.Init(this);
             Theme = new ColorScheme(this);
-            Theme.ApplyTo(this);
-
-            FileList = new FileList(this)
-            {
-                Dock = DockStyle.Fill
-            };
-            OpenedTabs = new Tabs
+            OpenedTabs = new Tabs(this)
             {
                 Dock = DockStyle.Fill
             };
@@ -41,6 +44,11 @@ namespace Editka
             {
                 Dock = DockStyle.Fill
             };
+
+            Theme.ApplyTo(this);
+            State.FillFileList(this);
+
+            Closing += Actions.Exit;
 
             var container1 = new SplitContainer
             {
@@ -56,7 +64,7 @@ namespace Editka
             };
             container2.Panel1.Controls.Add(OpenedTabs);
             container2.Panel2.Controls.Add(Notes);
-            container1.Panel1.Controls.Add(FileList);
+            container1.Panel1.Controls.Add(FileList.TreeView);
             container1.Panel2.Controls.Add(container2);
             Controls.Add(container1);
         }

@@ -28,6 +28,8 @@ namespace Editka
             File.FillTextbox(TextBox);
             Controls.Add(TextBox);
 
+            openedFile.Opened = this;
+
             TextBox.TextChanged += (sender, args) => Changed.Value = true;
             Changed.Changed += (oldValue, newValue) => UpdateText();
             openedFile.Filename.Changed += (oldValue, newValue) => UpdateText();
@@ -71,6 +73,13 @@ namespace Editka
             }
 
             base.Dispose(disposing);
+        }
+
+        public void Close()
+        {
+            File.Opened = null;
+            _root.OpenedTabs.TabPages.Remove(this);
+            Dispose();
         }
     }
 }

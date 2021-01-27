@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using System.Windows.Forms;
+using System.Xml.Serialization;
 
 namespace Editka.Files
 {
@@ -13,11 +14,15 @@ namespace Editka.Files
     public abstract class OpenedFile : TreeNode, IDisposable
     {
         private static int counter;
-        public readonly int Id;
-        
-        private string? _path;
-        public FileStream? File { get; private set; }
 
+        public readonly int Id;
+
+        public FileView? Opened;
+
+        private string? _path;
+
+        public FileStream? File { get; private set; }
+        
         public string? Path
         {
             get => _path;
@@ -28,7 +33,7 @@ namespace Editka.Files
             }
         }
 
-        public Computed<string> Filename;
+        [XmlIgnore] public readonly Computed<string> Filename;
 
         /// <summary>
         /// Открывает файл о указанному пути
@@ -37,7 +42,7 @@ namespace Editka.Files
         /// Может выкинуть исключение, если не удалось открыть файл!
         /// </exception>
         /// <param name="path">Путь к файлу</param>
-        protected OpenedFile(string path): this()
+        protected OpenedFile(string path) : this()
         {
             File = System.IO.File.Open(path, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.Read);
             Path = path;
@@ -51,7 +56,6 @@ namespace Editka.Files
             Text = Filename.Value;
         }
 
-        
         protected abstract string SuggestedExtension();
         protected abstract RichTextBoxStreamType StreamType { get; }
 
@@ -59,15 +63,16 @@ namespace Editka.Files
         {
             textBox.Clear();
 
-            if (File == null)
+            var file = GetFile(false);
+            if (file == null)
             {
                 return;
             }
 
             try
             {
-                File.Seek(0, SeekOrigin.Begin);
-                textBox.LoadFile(File, StreamType);
+                file.Seek(0, SeekOrigin.Begin);
+                textBox.LoadFile(file, StreamType);
             }
             catch (Exception e)
             {
@@ -77,7 +82,7 @@ namespace Editka.Files
 
         public bool LoadTextbox(RichTextBox textBox, bool ask = false)
         {
-            var file = GetFile(SuggestedExtension(), ask);
+            var file = GetFile(ask);
             if (file == null)
             {
                 return false;
@@ -97,21 +102,11 @@ namespace Editka.Files
             }
         }
 
-        private FileStream? GetFile(string extension, bool ask)
+        private string? AskPath()
         {
-            if (File != null)
-            {
-                return File;
-            }
-
-            if (!ask)
-            {
-                return null;
-            }
-            
             var dialog = new OpenFileDialog
             {
-                DefaultExt = extension,
+                DefaultExt = SuggestedExtension(),
                 AddExtension = true,
                 CheckFileExists = false,
                 CheckPathExists = true,
@@ -121,21 +116,67 @@ namespace Editka.Files
             var result = dialog.ShowDialog();
             if (result == DialogResult.OK && !string.IsNullOrWhiteSpace(dialog.FileName))
             {
-                var path = dialog.FileName;
-                try
+                return dialog.FileName;
+            }
+
+            return null;
+        }
+
+        private FileStream? GetFile(bool ask)
+        {
+            if (File != null)
+            {
+                return File;
+            }
+
+            if (Path == null)
+            {
+                if (!ask)
                 {
-                    File = System.IO.File.Open(path, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.Read);
-                    Path = path;
+                    return null;
                 }
-                catch (Exception e)
+
+                var path = AskPath();
+                if (path == null)
                 {
-                    MessageBox.Show(e.ToString(), "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    File = null;
-                    Path = null;
+                    return null;
                 }
+
+                Path = path;
+            }
+
+            try
+            {
+                File = System.IO.File.Open(Path, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.Read);
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(e.ToString(), "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                File = null;
+                Path = null;
             }
 
             return File;
+        }
+
+        public static OpenedFile? Open(string path)
+        {
+            var extension = System.IO.Path.GetExtension(path);
+            try
+            {
+                return extension switch
+                {
+                    ".rtf" => new Rich(path),
+                    ".cs" => new CSharp(path),
+                    _ => new Plain(path)
+                };
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(e.ToString(), "Невозможно открыть файл", MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
+                return null;
+            }
         }
 
         /// <summary>
@@ -154,21 +195,7 @@ namespace Editka.Files
             var result = dialog.ShowDialog();
             if (result == DialogResult.OK && !string.IsNullOrWhiteSpace(dialog.FileName))
             {
-                var extension = System.IO.Path.GetExtension(dialog.FileName);
-                try
-                {
-                    return extension switch
-                    {
-                        ".rtf" => new Rich(dialog.FileName),
-                        ".cs" => new CSharp(dialog.FileName),
-                        _ => new Plain(dialog.FileName)
-                    };
-                }
-                catch (Exception e)
-                {
-                    MessageBox.Show(e.ToString(), "Невозможно открыть файл", MessageBoxButtons.OK,
-                        MessageBoxIcon.Error);
-                }
+                return Open(dialog.FileName);
             }
 
             return null;
@@ -177,6 +204,7 @@ namespace Editka.Files
         public void Dispose()
         {
             File?.Dispose();
+            File = null;
         }
     }
 }
