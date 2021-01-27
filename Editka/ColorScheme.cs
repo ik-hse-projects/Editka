@@ -23,8 +23,8 @@ namespace Editka
             control.ControlAdded -= OnControlAdded;
             control.ControlAdded += OnControlAdded;
 
-            control.BackColor = _root.Settings.Colors.Get("background").Value;
-            control.ForeColor = _root.Settings.Colors.Get("foreground").Value;
+            control.BackColor = _root.Settings.Colors.Get("background").Value.Color;
+            control.ForeColor = _root.Settings.Colors.Get("foreground").Value.Color;
         }
 
         private void OnControlAdded(object sender, ControlEventArgs e)

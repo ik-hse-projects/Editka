@@ -27,6 +27,10 @@ namespace Editka
             {
                 eventArgs.Cancel = true;
             }
+            else
+            {
+                _root.State.Serialize(_root);
+            }
         }
 
         public bool Exit()
@@ -211,7 +215,7 @@ namespace Editka
 
         public MainForm NewWindow()
         {
-            var window = new MainForm();
+            var window = new MainForm(_root.State.Clone());
             MultiFormContext.Context.AddForm(window);
             return window;
         }

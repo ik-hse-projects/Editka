@@ -49,13 +49,6 @@ namespace Editka
                 root.Settings.BindShortcut("settings", menu.MenuItems.Add("Настройки", root.Actions.Settings));
             }
 
-            {
-                root.Settings.BindShortcut("settings", menu.MenuItems.Add("Serialize", (_, __) =>
-                {
-                    root.State.Serialize(root);
-                }));
-            }
-
             return menu;
         }
 

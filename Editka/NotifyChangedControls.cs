@@ -29,27 +29,29 @@ namespace Editka
             return result;
         }
 
-        public static Button GetControl(this NotifyChanged<Color> self)
+        public static Button GetControl(this NotifyChanged<SerializableColor> self)
         {
-            var result = new Button
+            var button = new Button
             {
                 Text = "Выбрать цвет",
-                BackColor = self.Value
+                BackColor = self.Value.Color
             };
-            result.Click += (sender, args) =>
+            button.Click += (sender, args) =>
             {
                 var dialog = new ColorDialog
                 {
-                    Color = self.Value,
+                    Color = self.Value.Color,
                 };
                 var result = dialog.ShowDialog();
                 if (result == DialogResult.OK)
                 {
-                    self.Value = dialog.Color;
+                    var changed = self.Value;
+                    changed.Color = dialog.Color;
+                    self.Value = changed;
                 }
             };
-            self.Changed += (oldValue, newValue) => result.BackColor = newValue;
-            return result;
+            self.Changed += (oldValue, newValue) => button.BackColor = newValue.Color;
+            return button;
         }
 
         public static ComboBox GetControl(this NotifyChanged<Shortcut> self)

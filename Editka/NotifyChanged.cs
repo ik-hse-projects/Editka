@@ -93,6 +93,7 @@ namespace Editka
         public IEnumerator<KeyValuePair<TKey, TVal>> GetEnumerator() =>
             _dictionary
                 .Select(x => new KeyValuePair<TKey, TVal>(x.Key, x.Value.Value))
+                .ToList()
                 .GetEnumerator();
 
         IEnumerator IEnumerable.GetEnumerator()

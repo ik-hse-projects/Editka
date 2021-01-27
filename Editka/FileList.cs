@@ -37,13 +37,16 @@ namespace Editka
 
         void OnNodeMouseClickEventHandler(object sender, TreeNodeMouseClickEventArgs args)
         {
-            if (args.Button == MouseButtons.Right && args.Node is OpenedFile openedFile)
+            if (args.Button == MouseButtons.Right)
             {
-                openedFile.Opened?.Close();
-                openedFile.Dispose();
-            }
+                if (args.Node is OpenedFile openedFile)
+                {
+                    openedFile.Opened?.Close();
+                    openedFile.Dispose();
+                }
 
-            args.Node.Remove();
+                args.Node.Remove();
+            }
         }
 
         public IEnumerator<OpenedFile> GetEnumerator()

@@ -21,15 +21,13 @@ namespace Editka
 
         public Notes Notes { get; }
 
-        internal MainForm()
+        internal MainForm(State state)
         {
             // Чтобы хоткеи работали:
             KeyPreview = true;
 
-            State = new State(
-                new Settings(this),
-                new List<OpenedFileInfo>()
-            );
+            State = state;
+            state.Settings ??= new Settings();
 
             FileList = new FileList(this);
             Actions = new Actions(this);

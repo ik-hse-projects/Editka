@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Windows.Forms;
 
@@ -12,13 +13,14 @@ namespace Editka
         [STAThread]
         public static void Main()
         {
-            Context = new MultiFormContext(new MainForm());
+            var initialState = State.DeserializeLatest() ?? new State();
+            Context = new MultiFormContext(new MainForm(initialState));
             Application.Run(Context);
         }
 
         private int openForms;
 
-        public MultiFormContext(params Form[] forms)
+        public MultiFormContext(params MainForm[] forms)
         {
             foreach (var form in forms)
             {
@@ -26,16 +28,16 @@ namespace Editka
             }
         }
 
-        public void AddForm(Form form)
+        public void AddForm(MainForm form)
         {
             openForms++;
 
             form.FormClosed += (s, args) =>
             {
-                //When we have closed the last of the "starting" forms, 
-                //end the program.
                 if (Interlocked.Decrement(ref openForms) == 0)
+                {
                     ExitThread();
+                }
             };
 
             form.Show();

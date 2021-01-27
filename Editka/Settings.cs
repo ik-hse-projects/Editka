@@ -1,20 +1,31 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.IO;
 using System.Windows.Forms;
+using System.Xml;
 using System.Xml.Serialization;
 
 namespace Editka
 {
+    public struct SerializableColor
+    {
+        [XmlIgnore] public Color Color;
+
+        public string ColorHtml
+        {
+            get => ColorTranslator.ToHtml(Color);
+            set => Color = ColorTranslator.FromHtml(value);
+        }
+    }
+
     public class Settings
     {
-        [XmlIgnore] private readonly MainForm _root;
-
-        public readonly NotifiableDictionary<string, Color> Colors = new NotifiableDictionary<string, Color>();
-        public readonly NotifyChanged<int> AutosaveSeconds = new NotifyChanged<int>();
-        public readonly NotifyChanged<bool> SaveOnFocus = new NotifyChanged<bool>();
+        public NotifiableDictionary<string, SerializableColor> Colors = new NotifiableDictionary<string, SerializableColor>();
+        public NotifyChanged<int> AutosaveSeconds = new NotifyChanged<int>();
+        public NotifyChanged<bool> SaveOnFocus = new NotifyChanged<bool>();
         public readonly NotifyChanged<bool> EnableHistory = new NotifyChanged<bool>();
-        public readonly NotifiableDictionary<string, Shortcut> Hotkeys = new NotifiableDictionary<string, Shortcut>();
+        public NotifiableDictionary<string, Shortcut> Hotkeys = new NotifiableDictionary<string, Shortcut>();
 
         private static readonly IReadOnlyDictionary<string, Shortcut> DefaultShortcuts =
             new Dictionary<string, Shortcut>
@@ -35,30 +46,6 @@ namespace Editka
                 {"underline", Shortcut.CtrlU},
                 {"strikethrough", Shortcut.CtrlT},
             };
-        
-        // For xml serialization. Do not forget to set _root after.
-        private Settings()
-        {
-        }
-
-        public Settings(MainForm root): this()
-        {
-            _root = root;
-        }
-
-        public Color GetColor(string name)
-        {
-            if (Colors.TryGetValue(name, out var value))
-            {
-                return value;
-            }
-
-            // TODO: Default theme
-            return name switch
-            {
-                _ => Color.Black
-            };
-        }
 
         public void BindShortcut(string name, MenuItem item)
         {
