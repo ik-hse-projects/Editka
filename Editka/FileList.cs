@@ -8,7 +8,7 @@ using Editka.Files;
 
 namespace Editka
 {
-    public class FileList : IEnumerable<OpenedFile>
+    public class FileList : IEnumerable<BaseNode>
     {
         [XmlIgnore] private MainForm _root;
 
@@ -49,9 +49,21 @@ namespace Editka
             }
         }
 
-        public IEnumerator<OpenedFile> GetEnumerator()
+        private IEnumerable<TreeNode> WalkTree(TreeNodeCollection parent)
         {
-            return TreeView.Nodes.OfType<OpenedFile>().GetEnumerator();
+            foreach (TreeNode node in parent)
+            {
+                yield return node;
+                foreach (var children in WalkTree(node.Nodes))
+                {
+                    yield return children;
+                }
+            }
+        }
+
+        public IEnumerator<BaseNode> GetEnumerator()
+        {
+            return WalkTree(TreeView.Nodes).OfType<BaseNode>().GetEnumerator();
         }
 
         IEnumerator IEnumerable.GetEnumerator()

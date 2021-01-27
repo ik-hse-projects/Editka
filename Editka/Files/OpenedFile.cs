@@ -11,29 +11,12 @@ namespace Editka.Files
     /// <remarks>
     /// Если забыть Dispose — будет плохо. Пользователь будет недоволен. Не надо так.
     /// </remarks>
-    public abstract class OpenedFile : TreeNode, IDisposable
+    public abstract class OpenedFile : BaseNode, IDisposable
     {
-        private static int counter;
-
-        public readonly int Id;
-
+        public FileStream? File { get; private set; }
         public FileView? Opened;
 
-        private string? _path;
-
-        public FileStream? File { get; private set; }
-        
-        public string? Path
-        {
-            get => _path;
-            private set
-            {
-                _path = value;
-                Filename.Update();
-            }
-        }
-
-        [XmlIgnore] public readonly Computed<string> Filename;
+        public override bool IsOpened => Opened != null;
 
         /// <summary>
         /// Открывает файл о указанному пути
@@ -50,10 +33,6 @@ namespace Editka.Files
 
         protected OpenedFile()
         {
-            Id = counter++;
-            Filename = new Computed<string>(() => Path ?? "(untitled)");
-            Filename.Changed += (oldValue, newValue) => Text = newValue;
-            Text = Filename.Value;
         }
 
         protected abstract string SuggestedExtension();
@@ -159,11 +138,16 @@ namespace Editka.Files
             return File;
         }
 
-        public static OpenedFile? Open(string path)
+        public static BaseNode? Open(string path)
         {
-            var extension = System.IO.Path.GetExtension(path);
             try
             {
+                if (Directory.Exists(path))
+                {
+                    return new OpenedDirectory(path);
+                }
+
+                var extension = System.IO.Path.GetExtension(path);
                 return extension switch
                 {
                     ".rtf" => new Rich(path),
@@ -182,15 +166,15 @@ namespace Editka.Files
         /// <summary>
         /// При помощи диалога запрашивает у пользователя путь к файлу и пытается его открыть.
         /// </summary>
-        /// <returns>OpenedFile, если всё прошло удачно, иначе null.</returns>
-        public static OpenedFile? AskOpen()
+        /// <returns>TreeNode, если всё прошло удачно, иначе null.</returns>
+        public static BaseNode? AskOpen()
         {
             var dialog = new OpenFileDialog
             {
+                ValidateNames = false,
                 CheckFileExists = false,
                 CheckPathExists = true,
                 Multiselect = false,
-                ValidateNames = true
             };
             var result = dialog.ShowDialog();
             if (result == DialogResult.OK && !string.IsNullOrWhiteSpace(dialog.FileName))

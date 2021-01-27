@@ -33,7 +33,7 @@ namespace Editka
         {
             Files = root.FileList
                 .Where(file => file.Path != null)
-                .Select(file => new OpenedFileInfo(file.Path!, file.Opened != null))
+                .Select(file => new OpenedFileInfo(file.Path!, file.IsOpened))
                 .ToList();
 
             var serializer = new XmlSerializer(typeof(State));
@@ -113,9 +113,9 @@ namespace Editka
                 if (file != null)
                 {
                     root.FileList.TreeView.Nodes.Add(file);
-                    if (info.TabOpened)
+                    if (info.TabOpened && file is OpenedFile openedFile)
                     {
-                        root.OpenedTabs.Open(file);
+                        root.OpenedTabs.Open(openedFile);
                     }
                 }
             }
