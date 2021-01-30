@@ -7,23 +7,12 @@ using Editka.Files;
 
 namespace Editka
 {
-    public struct OpenedFileInfo
-    {
-        public string Path;
-        public bool TabOpened;
-
-        public OpenedFileInfo(string path, bool tabOpened)
-        {
-            Path = path;
-            TabOpened = tabOpened;
-        }
-    }
-
     public class State
     {
         public Settings? Settings { get; set; }
 
-        public List<OpenedFileInfo>? Files { get; set; }
+        public List<string>? Files { get; set; }
+        public List<string>? OpenedTabs { get; set; }
 
         public State()
         {
@@ -31,9 +20,13 @@ namespace Editka
 
         public string? Serialize(MainForm root)
         {
-            Files = root.FileList
-                .Where(file => file.Path != null)
-                .Select(file => new OpenedFileInfo(file.Path!, file.IsOpened))
+            Files = root.FileList.TopNodes
+                .Select(file => file.Path!)
+                .Where(path => path != null)
+                .ToList();
+            OpenedTabs = root.OpenedTabs.FileTabs
+                .Select(tab => tab.File.Path)
+                .Where(path => path != null)
                 .ToList();
 
             var serializer = new XmlSerializer(typeof(State));
@@ -107,16 +100,21 @@ namespace Editka
                 return;
             }
 
-            foreach (var info in Files)
+            foreach (var path in Files)
             {
-                var file = OpenedFile.Open(info.Path);
+                var file = BaseNode.Open(path);
                 if (file != null)
                 {
                     root.FileList.TreeView.Nodes.Add(file);
-                    if (info.TabOpened && file is OpenedFile openedFile)
-                    {
-                        root.OpenedTabs.Open(openedFile);
-                    }
+                }
+            }
+
+            var opened = OpenedTabs != null ? OpenedTabs.ToHashSet() : new HashSet<string>();
+            foreach (var node in root.FileList.WalkTree())
+            {
+                if (node is OpenedFile openedFile && opened.Contains(openedFile.Path))
+                {
+                    root.OpenedTabs.Open(openedFile);
                 }
             }
         }

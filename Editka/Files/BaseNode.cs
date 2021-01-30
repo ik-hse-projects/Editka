@@ -25,14 +25,23 @@ namespace Editka.Files
 
         [XmlIgnore] public readonly Computed<string> Filename;
 
-        public abstract bool IsOpened { get; }
-
         protected BaseNode()
         {
             Id = counter++;
             Filename = new Computed<string>(() => Path ?? "(untitled)");
             Filename.Changed += (oldValue, newValue) => Text = newValue;
             Text = Filename.Value;
+        }
+
+        public static bool IsKnownExtension(string extension)
+        {
+            return extension switch
+            {
+                ".txt" => true,
+                ".rtf" => true,
+                ".cs" => true,
+                _ => false
+            };
         }
 
         public static BaseNode? Open(string path, bool silent = false)
@@ -50,6 +59,7 @@ namespace Editka.Files
                     ".rtf" => new Rich(path),
                     ".cs" => new CSharp(path),
                     ".txt" => new Plain(path),
+                    ".sln" => new Solution(path),
                     _ => null
                 };
             }

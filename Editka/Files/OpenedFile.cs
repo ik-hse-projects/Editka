@@ -16,8 +16,6 @@ namespace Editka.Files
         public FileStream? File { get; private set; }
         public FileView? Opened;
 
-        public override bool IsOpened => Opened != null;
-
         /// <summary>
         /// Открывает файл о указанному пути
         /// </summary>

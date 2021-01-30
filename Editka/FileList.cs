@@ -8,11 +8,13 @@ using Editka.Files;
 
 namespace Editka
 {
-    public class FileList : IEnumerable<BaseNode>
+    public class FileList
     {
         [XmlIgnore] private MainForm _root;
 
         [XmlIgnore] public readonly TreeView TreeView;
+
+        [XmlIgnore] public IEnumerable<BaseNode> TopNodes => TreeView.Nodes.OfType<BaseNode>(); 
 
         // For xml serialization. Do not forget to set _root after.
         private FileList()
@@ -49,6 +51,8 @@ namespace Editka
             }
         }
 
+        public IEnumerable<TreeNode> WalkTree() => WalkTree(TreeView.Nodes);
+
         private IEnumerable<TreeNode> WalkTree(TreeNodeCollection parent)
         {
             foreach (TreeNode node in parent)
@@ -59,16 +63,6 @@ namespace Editka
                     yield return children;
                 }
             }
-        }
-
-        public IEnumerator<BaseNode> GetEnumerator()
-        {
-            return WalkTree(TreeView.Nodes).OfType<BaseNode>().GetEnumerator();
-        }
-
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return GetEnumerator();
         }
     }
 }

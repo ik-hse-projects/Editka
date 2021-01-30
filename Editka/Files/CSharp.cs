@@ -7,5 +7,7 @@ namespace Editka.Files
         }
 
         protected override string SuggestedExtension() => ".cs";
+        
+        public Solution? Solution { get; set; }
     }
 }
