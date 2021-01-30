@@ -4,6 +4,7 @@ using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 using Editka.Files;
+using FastColoredTextBoxNS;
 
 namespace Editka
 {
@@ -173,48 +174,24 @@ namespace Editka
             throw new NotImplementedException();
         }
 
-        private void UpdateStyle(FontStyle mask)
-        {
-            if (_root.CurrentFile == null)
-            {
-                return;
-            }
-
-            if (!(_root.CurrentFile.File is Rich))
-            {
-                MessageBox.Show("Нельзя использовать форматирование в обычных файлах");
-                return;
-            }
-
-            var font = _root.CurrentFile.TextBox.SelectionFont;
-            if (font == null)
-            {
-                return;
-            }
-
-            // Напоминаю, что XOR с единицей инвертирует бит, т.е. переключает стиль.
-            var newStyle = font.Style ^ mask;
-            _root.CurrentFile.TextBox.SelectionFont = new Font(font.FontFamily, font.Size, newStyle);
-        }
-
         public void Bold(object sender, EventArgs e)
         {
-            UpdateStyle(FontStyle.Bold);
+            _root.CurrentFile?.TextBox.UpdateStyle(FontStyle.Bold);
         }
 
         public void Cursive(object sender, EventArgs e)
         {
-            UpdateStyle(FontStyle.Italic);
+            _root.CurrentFile?.TextBox.UpdateStyle(FontStyle.Italic);
         }
 
         public void Underline(object sender, EventArgs e)
         {
-            UpdateStyle(FontStyle.Underline);
+            _root.CurrentFile?.TextBox.UpdateStyle(FontStyle.Underline);
         }
 
         public void Strikethrough(object sender, EventArgs e)
         {
-            UpdateStyle(FontStyle.Strikeout);
+            _root.CurrentFile?.TextBox.UpdateStyle(FontStyle.Strikeout);
         }
 
         public void NewWindow(object sender, EventArgs eventArgs)

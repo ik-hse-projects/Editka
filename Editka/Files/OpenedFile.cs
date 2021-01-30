@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using System.Windows.Forms;
 using System.Xml.Serialization;
+using FastColoredTextBoxNS;
 
 namespace Editka.Files
 {
@@ -13,7 +14,7 @@ namespace Editka.Files
     /// </remarks>
     public abstract class OpenedFile : BaseNode, IDisposable
     {
-        public FileStream? File { get; private set; }
+        private FileStream? File { get; set; }
         public FileView? Opened;
 
         /// <summary>
@@ -34,9 +35,9 @@ namespace Editka.Files
         }
 
         protected abstract string SuggestedExtension();
-        protected abstract RichTextBoxStreamType StreamType { get; }
+        public abstract RichTextBoxStreamType StreamType { get; }
 
-        public void FillTextbox(RichTextBox textBox)
+        public void FillTextbox(TextboxWrapper textBox)
         {
             textBox.Clear();
 
@@ -49,7 +50,7 @@ namespace Editka.Files
             try
             {
                 file.Seek(0, SeekOrigin.Begin);
-                textBox.LoadFile(file, StreamType);
+                textBox.LoadFile(file);
             }
             catch (Exception e)
             {
@@ -57,7 +58,7 @@ namespace Editka.Files
             }
         }
 
-        public bool LoadTextbox(RichTextBox textBox, bool ask = false)
+        public bool LoadTextbox(TextboxWrapper textBox, bool ask = false)
         {
             var file = GetFile(ask);
             if (file == null)
@@ -68,7 +69,7 @@ namespace Editka.Files
             try
             {
                 file.SetLength(0);
-                textBox.SaveFile(File, StreamType);
+                textBox.SaveFile(file);
                 file.Flush(true);
                 return true;
             }

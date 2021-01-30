@@ -47,22 +47,29 @@ namespace Editka
             {
                 if (GetTabRect(i).Contains(click.Location))
                 {
-                    if (TabPages[i] is FileView fileView && fileView.Changed.Value)
+                    if (TabPages[i] is FileView fileView)
                     {
-                        var dialog = MessageBox.Show("Сохранить изменения?", "Закрыть вкладку", MessageBoxButtons.YesNoCancel);
-                        switch (dialog)
+                        if (fileView.Changed.Value)
                         {
-                            case DialogResult.Yes:
-                                fileView.Save();
-                                break;
-                            case DialogResult.Cancel:
-                                return;
+                            var dialog = MessageBox.Show("Сохранить изменения?", "Закрыть вкладку",
+                                MessageBoxButtons.YesNoCancel);
+                            switch (dialog)
+                            {
+                                case DialogResult.Yes:
+                                    fileView.Save();
+                                    break;
+                                case DialogResult.Cancel:
+                                    return;
+                            }
                         }
 
                         fileView.Close();
                     }
+                    else
+                    {
+                        TabPages.RemoveAt(i);
+                    }
 
-                    TabPages.RemoveAt(i);
                     return;
                 }
             }

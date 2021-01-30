@@ -13,4 +13,8 @@
       <Reference Include="System.Windows.Forms" />
     </ItemGroup>
 
+    <ItemGroup>
+      <PackageReference Include="FCTB" Version="2.16.24" />
+    </ItemGroup>
+
 </Project>

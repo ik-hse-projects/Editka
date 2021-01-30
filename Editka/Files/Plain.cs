@@ -14,8 +14,8 @@ namespace Editka.Files
         {
         }
 
-        protected override RichTextBoxStreamType StreamType => RichTextBoxStreamType.UnicodePlainText;
+        public override RichTextBoxStreamType StreamType => RichTextBoxStreamType.UnicodePlainText;
 
-        protected override string SuggestedExtension() => ".cs";
+        protected override string SuggestedExtension() => ".txt";
     }
 }

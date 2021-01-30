@@ -2,6 +2,7 @@ using System;
 using System.Drawing;
 using System.Windows.Forms;
 using Editka.Files;
+using FastColoredTextBoxNS;
 
 namespace Editka
 {
@@ -9,24 +10,19 @@ namespace Editka
     {
         private MainForm _root;
         public OpenedFile File;
-        public RichTextBox TextBox;
+        public TextboxWrapper TextBox;
         public NotifyChanged<bool> Changed = new NotifyChanged<bool>(false);
 
         public FileView(MainForm root, OpenedFile openedFile)
         {
             File = openedFile;
             _root = root;
-            TextBox = new RichTextBox
-            {
-                Dock = DockStyle.Fill,
-                AcceptsTab = true,
-                ContextMenu = MenuCreator.ContextMenu(_root),
-                MaxLength = 5 * 1024 * 1024 / 2, // 5Mb of UTF-16.
-                WordWrap = false,
-                Font = new Font(FontFamily.GenericMonospace, 12)
-            };
+
+            TextBox = new TextboxWrapper(File.StreamType);
+            TextBox.Control.Dock = DockStyle.Fill;
+            TextBox.Control.ContextMenu = MenuCreator.ContextMenu(_root);
             File.FillTextbox(TextBox);
-            Controls.Add(TextBox);
+            Controls.Add(TextBox.Control);
 
             openedFile.Opened = this;
 
