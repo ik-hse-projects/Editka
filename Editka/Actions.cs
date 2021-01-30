@@ -74,10 +74,19 @@ namespace Editka
 
         public void Open()
         {
-            var file = OpenedFile.AskOpen();
+            var file = BaseNode.AskOpen();
             if (file != null)
             {
                 _root.FileList.TreeView.Nodes.Add(file);
+            }
+        }
+        
+        public void OpenDirectory(object sender, EventArgs e)
+        {
+            var dir = BaseNode.AskDirectory();
+            if (dir != null)
+            {
+                _root.FileList.TreeView.Nodes.Add(dir);
             }
         }
 

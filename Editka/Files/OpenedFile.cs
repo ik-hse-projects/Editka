@@ -138,53 +138,6 @@ namespace Editka.Files
             return File;
         }
 
-        public static BaseNode? Open(string path)
-        {
-            try
-            {
-                if (Directory.Exists(path))
-                {
-                    return new OpenedDirectory(path);
-                }
-
-                var extension = System.IO.Path.GetExtension(path);
-                return extension switch
-                {
-                    ".rtf" => new Rich(path),
-                    ".cs" => new CSharp(path),
-                    _ => new Plain(path)
-                };
-            }
-            catch (Exception e)
-            {
-                MessageBox.Show(e.ToString(), "Невозможно открыть файл", MessageBoxButtons.OK,
-                    MessageBoxIcon.Error);
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// При помощи диалога запрашивает у пользователя путь к файлу и пытается его открыть.
-        /// </summary>
-        /// <returns>TreeNode, если всё прошло удачно, иначе null.</returns>
-        public static BaseNode? AskOpen()
-        {
-            var dialog = new OpenFileDialog
-            {
-                ValidateNames = false,
-                CheckFileExists = false,
-                CheckPathExists = true,
-                Multiselect = false,
-            };
-            var result = dialog.ShowDialog();
-            if (result == DialogResult.OK && !string.IsNullOrWhiteSpace(dialog.FileName))
-            {
-                return Open(dialog.FileName);
-            }
-
-            return null;
-        }
-
         public void Dispose()
         {
             File?.Dispose();
