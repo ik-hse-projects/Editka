@@ -6,28 +6,34 @@ using FastColoredTextBoxNS;
 
 namespace Editka
 {
+    public enum FileKind
+    {
+        Plain,
+        Rtf,
+        CSharp
+    }
+    
     public class TextboxWrapper
     {
         private readonly RichTextBox? rich;
         private readonly FastColoredTextBox? fast;
-        private readonly RichTextBoxStreamType streamType;
 
         public Control Control => (rich as Control ?? fast)!;
         public event EventHandler? TextChanged;
 
-        public TextboxWrapper(RichTextBoxStreamType streamType)
+        public TextboxWrapper(FileKind streamType)
         {
-            this.streamType = streamType;
             switch (streamType)
             {
-                case RichTextBoxStreamType.RichNoOleObjs:
-                case RichTextBoxStreamType.RichText:
+                case FileKind.Plain:
+                    fast = new FastColoredTextBox();
+                    break;
+                case FileKind.Rtf:
                     rich = new RichTextBox();
                     break;
-                case RichTextBoxStreamType.PlainText:
-                case RichTextBoxStreamType.UnicodePlainText:
-                case RichTextBoxStreamType.TextTextOleObjs:
+                case FileKind.CSharp:
                     fast = new FastColoredTextBox();
+                    fast.Language = Language.CSharp;
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(streamType), streamType, null);
@@ -82,7 +88,7 @@ namespace Editka
         {
             if (rich != null)
             {
-                rich.LoadFile(file, streamType);
+                rich.LoadFile(file, RichTextBoxStreamType.RichText);
                 return;
             }
 
@@ -97,7 +103,7 @@ namespace Editka
         {
             if (rich != null)
             {
-                rich.SaveFile(file, streamType);
+                rich.SaveFile(file, RichTextBoxStreamType.RichText);
                 return;
             }
 

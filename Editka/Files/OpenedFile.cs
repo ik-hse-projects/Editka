@@ -35,7 +35,7 @@ namespace Editka.Files
         }
 
         protected abstract string SuggestedExtension();
-        public abstract RichTextBoxStreamType StreamType { get; }
+        public abstract FileKind Kind { get; }
 
         public void FillTextbox(TextboxWrapper textBox)
         {

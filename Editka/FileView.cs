@@ -18,7 +18,7 @@ namespace Editka
             File = openedFile;
             _root = root;
 
-            TextBox = new TextboxWrapper(File.StreamType);
+            TextBox = new TextboxWrapper(File.Kind);
             TextBox.Control.Dock = DockStyle.Fill;
             TextBox.Control.ContextMenu = MenuCreator.ContextMenu(_root);
             File.FillTextbox(TextBox);

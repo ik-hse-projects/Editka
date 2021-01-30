@@ -6,6 +6,7 @@ namespace Editka.Files
         {
         }
 
+        public override FileKind Kind => FileKind.CSharp;
         protected override string SuggestedExtension() => ".cs";
         
         public Solution? Solution { get; set; }

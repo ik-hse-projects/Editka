@@ -14,7 +14,7 @@ namespace Editka.Files
         {
         }
 
-        public override RichTextBoxStreamType StreamType => RichTextBoxStreamType.RichText;
+        public override FileKind Kind => FileKind.Rtf;
 
         protected override string SuggestedExtension() => ".rtf";
     }
