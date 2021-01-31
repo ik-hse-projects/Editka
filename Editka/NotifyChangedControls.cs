@@ -7,6 +7,9 @@ namespace Editka
 {
     public static class NotifyChangedControls
     {
+        // FIXME: Здесь должны быть слабые ссылки, иначе получается утечка памяти.
+        // Созданные контролы никогда не уничтожаются, поскольку есть вероятность, что их потребуется обновить.
+
         public static NumericUpDown GetControl(this NotifyChanged<int> self)
         {
             var result = new NumericUpDown
@@ -61,11 +64,19 @@ namespace Editka
             {
                 result.Items.Add(res);
             }
-            
+
             result.SelectedValueChanged +=
                 (sender, args) => self.Value = (result.SelectedItem as Shortcut?) ?? Shortcut.None;
             self.Changed += (oldValue, newValue) => result.SelectedItem = newValue;
             result.SelectedItem = self.Value;
+            return result;
+        }
+
+        public static TextBox GetControl(this NotifyChanged<string> self)
+        {
+            var result = new TextBox {Text = self.Value};
+            result.TextChanged += (sender, args) => self.Value = result.Text;
+            self.Changed += (value, newValue) => result.Text = newValue;
             return result;
         }
     }

@@ -100,6 +100,28 @@ namespace Editka.Files
             return null;
         }
 
+        protected string? GetPath(bool ask)
+        {
+            if (Path != null)
+            {
+                return Path;
+            }
+
+            if (!ask)
+            {
+                return null;
+            }
+
+            var path = AskPath();
+            if (path == null)
+            {
+                return null;
+            }
+
+            Path = path;
+            return Path;
+        }
+
         private FileStream? GetFile(bool ask)
         {
             if (File != null)
@@ -107,25 +129,15 @@ namespace Editka.Files
                 return File;
             }
 
-            if (Path == null)
+            var path = GetPath(ask);
+            if (path == null)
             {
-                if (!ask)
-                {
-                    return null;
-                }
-
-                var path = AskPath();
-                if (path == null)
-                {
-                    return null;
-                }
-
-                Path = path;
+                return null;
             }
 
             try
             {
-                File = System.IO.File.Open(Path, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.Read);
+                File = System.IO.File.Open(path, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.Read);
             }
             catch (Exception e)
             {

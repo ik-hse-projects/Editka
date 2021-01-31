@@ -27,7 +27,6 @@ namespace Editka
             KeyPreview = true;
 
             State = state;
-            state.Settings ??= new Settings();
 
             FileList = new FileList(this);
             Actions = new Actions(this);
@@ -38,7 +37,7 @@ namespace Editka
             {
                 Dock = DockStyle.Fill
             };
-            Notes = new Notes
+            Notes = new Notes(this)
             {
                 Dock = DockStyle.Fill
             };

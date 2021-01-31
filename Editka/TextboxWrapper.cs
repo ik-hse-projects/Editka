@@ -38,7 +38,7 @@ namespace Editka
                 default:
                     throw new ArgumentOutOfRangeException(nameof(streamType), streamType, null);
             }
-
+            
             Control.TextChanged += (sender, args) => TextChanged?.Invoke(sender, args);
         }
 
@@ -94,7 +94,7 @@ namespace Editka
 
             if (fast != null)
             {
-                using StreamReader reader = new StreamReader(file);
+                StreamReader reader = new StreamReader(file);
                 fast.Text = reader.ReadToEnd();
             }
         }
@@ -109,7 +109,7 @@ namespace Editka
 
             if (fast != null)
             {
-                using StreamWriter writer = new StreamWriter(file);
+                StreamWriter writer = new StreamWriter(file);
                 writer.Write(fast.Text);
             }
         }

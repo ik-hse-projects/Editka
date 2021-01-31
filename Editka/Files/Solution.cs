@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using System.Linq;
 using System.Windows.Forms;
 
@@ -19,6 +20,17 @@ namespace Editka.Files
 
                 nodes.AddRange(top.Nodes.OfType<TreeNode>());
             }
+
+            Path = path;
+        }
+
+        public void Build(MainForm root)
+        {
+            if (Path == null)
+            {
+                return;
+            }
+            root.Notes.BuildLog.DoBuild(Path, "dotnet");
         }
     }
 }

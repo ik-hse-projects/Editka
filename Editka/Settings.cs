@@ -27,6 +27,9 @@ namespace Editka
         public readonly NotifyChanged<bool> EnableHistory = new NotifyChanged<bool>();
         public NotifiableDictionary<string, Shortcut> Hotkeys = new NotifiableDictionary<string, Shortcut>();
 
+        public NotifyChanged<string?> DotnetPath = new NotifyChanged<string?>();
+        public NotifyChanged<string?> CscPath = new NotifyChanged<string?>();
+
         private static readonly IReadOnlyDictionary<string, Shortcut> DefaultShortcuts =
             new Dictionary<string, Shortcut>
             {

@@ -9,7 +9,7 @@ namespace Editka
 {
     public class State
     {
-        public Settings? Settings { get; set; }
+        public Settings Settings { get; set; }
 
         public List<string>? Files { get; set; }
         public List<string>? OpenedTabs { get; set; }
@@ -58,7 +58,9 @@ namespace Editka
             {
                 var serializer = new XmlSerializer(typeof(State));
                 using var file = File.OpenRead(path);
-                return (State) serializer.Deserialize(file);
+                var result = (State) serializer.Deserialize(file);
+                result.Settings ??= new Settings();
+                return result;
             }
             catch (Exception e)
             {

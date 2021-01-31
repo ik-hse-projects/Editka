@@ -92,6 +92,26 @@ namespace Editka
                     },
                     new GroupBox
                     {
+                        Text = "Компиляция",
+                        AutoSize = true,
+                        Controls =
+                        {
+                            new TableLayoutPanel
+                            {
+                                AutoSize = true,
+                                Location = new Point(5, 15),
+                                Controls =
+                                {
+                                    {root.Settings.CscPath.GetControl(), 1, 1},
+                                    {new Label {Text = "csc.exe", AutoSize = true}, 2, 1},
+                                    {root.Settings.DotnetPath.GetControl(), 1, 2},
+                                    {new Label {Text = "dotnet.exe", AutoSize = true}, 2, 2},
+                                }
+                            }
+                        }
+                    },
+                    new GroupBox
+                    {
                         Text = "Горячие клавиши",
                         AutoSize = true,
                         Controls = {hotkeys},
@@ -99,6 +119,18 @@ namespace Editka
                     close
                 }
             });
+        }
+
+        public bool AskOpen(string message)
+        {
+            var result = MessageBox.Show(message, "Требуется настройка", MessageBoxButtons.OKCancel);
+            if (result != DialogResult.OK)
+            {
+                return false;
+            }
+
+            ShowDialog();
+            return true;
         }
     }
 }

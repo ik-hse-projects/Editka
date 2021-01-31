@@ -136,7 +136,20 @@ namespace Editka
 
         public void Build(object sender, EventArgs e)
         {
-            throw new NotImplementedException();
+            if (!(_root.CurrentFile?.File is CSharp cSharp))
+            {
+                MessageBox.Show("Этот файл нельзя скомпилировать этой программой.");
+                return;
+            }
+
+            if (cSharp.Solution != null)
+            {
+                cSharp.Solution.Build(_root);
+            }
+            else
+            {
+                cSharp.Build(_root);
+            }
         }
 
         public void Run(object sender, EventArgs e)

@@ -15,6 +15,7 @@ namespace Editka
         {
             var initialState = State.DeserializeLatest() ?? new State();
             Context = new MultiFormContext(new MainForm(initialState));
+            Application.EnableVisualStyles();
             Application.Run(Context);
         }
 

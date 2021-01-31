@@ -60,6 +60,7 @@ namespace Editka.Files
                     ".cs" => new CSharp(path),
                     ".txt" => new Plain(path),
                     ".sln" => new Solution(path),
+                    ".csproj" => new Solution(path),
                     _ => null
                 };
             }

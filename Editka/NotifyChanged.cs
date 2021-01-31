@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Drawing.Imaging;
 using System.Linq;
+using System.Windows.Forms;
 using System.Xml.Serialization;
 
 namespace Editka

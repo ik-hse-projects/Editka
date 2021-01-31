@@ -4,11 +4,12 @@ namespace Editka
 {
     public class Notes : TabControl
     {
-        public Comments Comments { get; }
-        public Notes()
+        public BuildLog BuildLog { get; }
+
+        public Notes(MainForm root)
         {
-            Comments = new Comments();
-            TabPages.Add(Comments);
+            BuildLog = new BuildLog(root);
+            TabPages.Add(BuildLog);
         }
     }
 }
