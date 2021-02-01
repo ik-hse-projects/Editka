@@ -1,4 +1,5 @@
 ﻿using System.Windows.Forms;
+using Editka.Compat;
 
 namespace Editka
 {
@@ -60,17 +61,7 @@ namespace Editka
             container1.Panel1.Controls.Add(FileList.TreeView);
             container1.Panel2.Controls.Add(container2);
 
-            MainMenuStrip = MenuCreator.MainMenu(this);
-            Controls.Add(new TableLayoutPanel
-            {
-                Dock = DockStyle.Fill,
-                ColumnCount = 1,
-                Controls =
-                {
-                    MainMenuStrip,
-                    container1
-                }
-            });
+            this.SetContent(MenuCreator.MainMenu(this), container1);
         }
     }
 }

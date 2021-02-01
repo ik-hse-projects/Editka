@@ -16,4 +16,8 @@
       <PackageReference Include="FCTB" Version="2.16.24" />
     </ItemGroup>
 
+    <ItemGroup>
+        <Compile Remove="Compat/Empty.cs" />
+    </ItemGroup>
+
 </Project>

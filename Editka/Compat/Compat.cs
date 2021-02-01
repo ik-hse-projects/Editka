@@ -162,4 +162,22 @@ namespace Editka.Compat
         public static implicit operator Forms.Control(Control menu) => menu._self;
         public static implicit operator Control(Forms.Control menu) => new Control(menu);
     }
+    
+    public static class MainFormExt
+    {
+        public static void SetContent(this MainForm mainForm, MainMenu menu, Control control)
+        {
+            mainForm.MainMenuStrip = menu;
+            mainForm.Controls.Add(new Forms.TableLayoutPanel
+            {
+                Dock = Forms.DockStyle.Fill,
+                ColumnCount = 1,
+                Controls =
+                {
+                    MainMenuStrip,
+                    container1
+                }
+            });
+        }
+    }
 }
