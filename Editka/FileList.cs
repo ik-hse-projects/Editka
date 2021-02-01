@@ -6,27 +6,33 @@ using Editka.Files;
 
 namespace Editka
 {
+    /// <summary>
+    /// Список откртых файлов, но не вкладки.
+    /// </summary>
     public class FileList
     {
-        [XmlIgnore] public readonly TreeView TreeView;
-        [XmlIgnore] private readonly MainForm _root;
+        /// <summary>
+        /// Control, который всё хранит.
+        /// </summary>
+        public readonly TreeView TreeView;
 
-        // For xml serialization. Do not forget to set _root after.
-        private FileList()
+        private readonly MainForm _root;
+
+        public FileList(MainForm root)
         {
             TreeView = new TreeView {Dock = DockStyle.Fill};
-            TreeView.NodeMouseDoubleClick += OnTreeNodeMouseClickEventHandler;
-            TreeView.NodeMouseClick += OnNodeMouseClickEventHandler;
-        }
-
-        public FileList(MainForm root) : this()
-        {
+            TreeView.NodeMouseDoubleClick += OpenNode;
+            TreeView.NodeMouseClick += MaybeCloseNode;
             _root = root;
         }
 
-        [XmlIgnore] public IEnumerable<BaseNode> TopNodes => TreeView.Nodes.OfType<BaseNode>();
+        /// <summary>
+        /// Файлы/директории, которые открыты сами по себе, а не из-за открытия другой директории.
+        /// Т.е. не вложенные.
+        /// </summary>
+        public IEnumerable<BaseNode> TopNodes => TreeView.Nodes.OfType<BaseNode>();
 
-        private void OnTreeNodeMouseClickEventHandler(object sender, TreeNodeMouseClickEventArgs args)
+        private void OpenNode(object sender, TreeNodeMouseClickEventArgs args)
         {
             if (args.Node is OpenedFile openedFile)
             {
@@ -34,7 +40,7 @@ namespace Editka
             }
         }
 
-        private void OnNodeMouseClickEventHandler(object sender, TreeNodeMouseClickEventArgs args)
+        private void MaybeCloseNode(object sender, TreeNodeMouseClickEventArgs args)
         {
             if (args.Button == MouseButtons.Right)
             {
@@ -48,16 +54,23 @@ namespace Editka
             }
         }
 
-        public IEnumerable<TreeNode> WalkTree()
+        /// <summary>
+        /// Рекурсивно обходит всё дерево открытых файлов.
+        /// </summary>
+        public IEnumerable<BaseNode> WalkTree()
         {
             return WalkTree(TreeView.Nodes);
         }
 
-        private IEnumerable<TreeNode> WalkTree(TreeNodeCollection parent)
+        private IEnumerable<BaseNode> WalkTree(TreeNodeCollection parent)
         {
             foreach (TreeNode node in parent)
             {
-                yield return node;
+                if (node is BaseNode baseNode)
+                {
+                    yield return baseNode;
+                }
+
                 foreach (var children in WalkTree(node.Nodes))
                 {
                     yield return children;

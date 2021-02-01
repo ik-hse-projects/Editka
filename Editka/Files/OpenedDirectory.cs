@@ -5,8 +5,14 @@ using System.Windows.Forms;
 
 namespace Editka.Files
 {
+    /// <summary>
+    /// Базовый класс для директорий. 
+    /// </summary>
     public class OpenedDirectory : BaseNode
     {
+        /// <summary>
+        /// Другие директории внутри этой.
+        /// </summary>
         private readonly Dictionary<string, TreeNode> directories = new Dictionary<string, TreeNode>();
 
         public OpenedDirectory(string root)
@@ -27,6 +33,10 @@ namespace Editka.Files
             }
         }
 
+        /// <summary>
+        /// Возвращает директорию из <see cref="directories"/>.
+        /// При необходимости добавляет туда все недостающие родительские.
+        /// </summary>
         private TreeNode GetDirFor(string path)
         {
             var parent = System.IO.Path.GetDirectoryName(path);

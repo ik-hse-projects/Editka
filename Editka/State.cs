@@ -7,6 +7,9 @@ using Editka.Files;
 
 namespace Editka
 {
+    /// <summary>
+    /// Этот класс сохраняется на диск и хранит всё необходимое для поноценого перезапуска.
+    /// </summary>
     public class State
     {
         public State()
@@ -14,11 +17,25 @@ namespace Editka
             Settings = new Settings();
         }
 
+        /// <summary>
+        /// Настройки программы.
+        /// </summary>
         public Settings Settings { get; set; }
 
-        public List<string>? Files { get; set; }
-        public List<string>? OpenedTabs { get; set; }
+        /// <summary>
+        /// Список путей к открытым файлам.
+        /// </summary>
+        private List<string>? Files { get; set; }
 
+        /// <summary>
+        /// Список путей к файлам, которые открыты как вкладки.
+        /// </summary>
+        private List<string>? OpenedTabs { get; set; }
+
+        /// <summary>
+        /// Сохраняет состояние на диск.
+        /// </summary>
+        /// <returns>Путь к созданному файлу.</returns>
         public string? Serialize(MainForm root)
         {
             Files = root.FileList.TopNodes
@@ -53,7 +70,11 @@ namespace Editka
             }
         }
 
-        public static State? Deserialize(string path)
+        /// <summary>
+        /// Загружает состояние с диска и возвращает его.
+        /// </summary>
+        /// <param name="path">Путь к файлу сохранения</param>
+        private static State? Deserialize(string path)
         {
             try
             {
@@ -70,6 +91,10 @@ namespace Editka
             }
         }
 
+        /// <summary>
+        /// Загружает и возвращает последнее сохранённое состояние.
+        /// </summary>
+        /// <returns></returns>
         public static State? DeserializeLatest()
         {
             try
@@ -96,6 +121,9 @@ namespace Editka
             }
         }
 
+        /// <summary>
+        /// Открывает все файлы и вкладки, загружает их в интерфейс.
+        /// </summary>
         public void FillFileList(MainForm root)
         {
             if (Files == null)
@@ -122,7 +150,10 @@ namespace Editka
             }
         }
 
-        public State Clone()
+        /// <summary>
+        /// Создаёт копию состояния, но с обнулёнными файлами. Сохраняются только настройки.
+        /// </summary>
+        public State CloneSettings()
         {
             var serializer = new XmlSerializer(typeof(State));
 

@@ -2,10 +2,19 @@ using System.Windows.Forms;
 
 namespace Editka
 {
+    /// <summary>
+    /// Класс, который занимается созданием менюшек на все случаи жизни.
+    /// </summary>
     public static class MenuCreator
     {
+        /// <summary>
+        /// Те пункты меню, которые отвечают за форматирование, и на которые навешаны хоткеи.
+        /// </summary>
         private static MenuItem[]? _formatButtons;
 
+        /// <summary>
+        /// Создаёт главное меню всея программмы (то, что сверху).
+        /// </summary>
         public static MainMenu MainMenu(MainForm root)
         {
             var menu = new MainMenu();
@@ -52,6 +61,9 @@ namespace Editka
             return menu;
         }
 
+        /// <summary>
+        /// Создаёт контекстное меню для текстовых файлов.
+        /// </summary>
         public static ContextMenu ContextMenu(MainForm root)
         {
             var menu = new ContextMenu();
@@ -66,6 +78,10 @@ namespace Editka
             return menu;
         }
 
+        /// <summary>
+        /// Добавляет кнопки форматирования в указанное меню.
+        /// </summary>
+        /// <param name="items">Куда нужно добавить кнопки</param>
         private static void AddFormatButtons(Menu.MenuItemCollection items, MainForm root)
         {
             var formatButtons = new[]

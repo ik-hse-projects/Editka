@@ -7,18 +7,31 @@ using System.Windows.Forms;
 
 namespace Editka
 {
+    /// <summary>
+    /// Диалог, который указывает на то, что программа компилируется.
+    /// </summary>
     public class CompilingDialog : Form
     {
-        public Process Process;
+        /// <summary>
+        /// Запущенный процесс компилятора.
+        /// </summary>
+        public readonly Process Process;
 
+        //            (а что ещё может делать конструктор?)
+        /// <summary> Создаёт диалог. </summary>
+        /// <param name="fileName">Путь к исполняемому файлу.</param>
+        /// <param name="workdir">Директория, в которой компилятор будет работать.</param>
+        /// <param name="args">Параметры к компилятору. Будут аккуратно экранированы.</param>
         public CompilingDialog(string fileName, string workdir, IEnumerable<string> args) : this(new Process
         {
             StartInfo =
             {
                 FileName = fileName,
-                // https://stackoverflow.com/a/6040946
+                // Аккуратное экранирование: https://stackoverflow.com/a/6040946
                 Arguments = string.Join(" ", args.Select(arg => "\"" + Regex.Replace(arg, @"(\\+)$", @"$1$1") + "\"")),
                 UseShellExecute = false,
+                // Я намеренно создаю окошко, т.к. очень сложно сделать нормальное отображение прогресса.
+                // А так хоть понятно, не зависло ли эта программа.
                 CreateNoWindow = false,
                 WindowStyle = ProcessWindowStyle.Normal,
                 RedirectStandardOutput = true,
@@ -28,9 +41,10 @@ namespace Editka
             EnableRaisingEvents = true
         })
         {
+            // (интересно, если перенеосить тело метода в параметры конструктора, то будет ли это считаться <40 строк?)
         }
 
-        public CompilingDialog(Process process)
+        private CompilingDialog(Process process)
         {
             Process = process;
             AutoSize = true;
@@ -59,11 +73,15 @@ namespace Editka
                 }
                 catch
                 {
+                    // ignored
                 }
             };
-            process.Exited += (sender, args) => Invoke((MethodInvoker) (() => Close()));
+            process.Exited += (sender, args) => Invoke((MethodInvoker) (Close));
         }
 
+        /// <summary>
+        /// Запускает процесс и отображает диалог.
+        /// </summary>
         public void Start()
         {
             try

@@ -3,12 +3,27 @@ using Editka.Files;
 
 namespace Editka
 {
+    /// <summary>
+    /// Класс, отвечающий за отображение файла.
+    /// </summary>
     public class FileView : TabPage
     {
         private readonly MainForm _root;
-        public NotifyChanged<bool> Changed = new NotifyChanged<bool>(false);
-        public OpenedFile File;
-        public TextboxWrapper TextBox;
+
+        /// <summary>
+        /// Изменён ли файл?
+        /// </summary>
+        public readonly NotifyChanged<bool> Changed = new NotifyChanged<bool>(false);
+
+        /// <summary>
+        /// Содержимое файла и другая важная информаиця про него.
+        /// </summary>
+        public readonly OpenedFile File;
+
+        /// <summary>
+        /// Тот Control, который собственно содержит текст.
+        /// </summary>
+        public readonly TextboxWrapper TextBox;
 
         public FileView(MainForm root, OpenedFile openedFile)
         {
@@ -23,12 +38,16 @@ namespace Editka
 
             openedFile.Opened = this;
 
-            TextBox.TextChanged += (sender, args) => Changed.Value = true;
+            TextBox.Control.TextChanged += (sender, args) => Changed.Value = true;
             Changed.Changed += (oldValue, newValue) => UpdateText();
             openedFile.Filename.Changed += (oldValue, newValue) => UpdateText();
             UpdateText();
         }
 
+        /// <summary>
+        /// Сохраняет файл, если это нужно.
+        /// </summary>
+        /// <param name="ask">Следует ли спрашивать путь к файлу, если это новый файл?</param>
         public void Save(bool ask = true)
         {
             if (!Changed.Value)
@@ -42,19 +61,13 @@ namespace Editka
             }
         }
 
+        /// <summary>
+        /// Обновляет имя вкладки.
+        /// </summary>
         private void UpdateText()
         {
             Text = Changed.Value ? $"{File.Filename.Value}*" : File.Filename.Value;
-            var idx = _root.OpenedTabs.TabPages.IndexOf(this);
-            if (idx >= 0)
-            {
-                _root.OpenedTabs.Invalidate(_root.OpenedTabs.GetTabRect(idx));
-            }
-            else
-            {
-                _root.OpenedTabs.Invalidate();
-            }
-
+            _root.OpenedTabs.Invalidate();
             _root.OpenedTabs.Update();
         }
 
@@ -68,10 +81,14 @@ namespace Editka
             base.Dispose(disposing);
         }
 
+        /// <summary>
+        /// Закрывает вкладку и освобождает открытый файл.
+        /// </summary>
         public void Close()
         {
             File.Opened = null;
             _root.OpenedTabs.TabPages.Remove(this);
+            
             Dispose();
         }
     }

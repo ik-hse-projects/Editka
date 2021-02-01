@@ -2,6 +2,9 @@
 
 namespace Editka
 {
+    /// <summary>
+    /// Правая часть окна, содержит всякую полезную информацию.
+    /// </summary>
     public class Notes : TabControl
     {
         public Notes(MainForm root)

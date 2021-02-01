@@ -3,6 +3,9 @@ using System.Windows.Forms;
 
 namespace Editka.Files
 {
+    /// <summary>
+    /// .sln или .csproj файл. В программе играет роль директории.
+    /// </summary>
     public class Solution : OpenedDirectory
     {
         public Solution(string path) : base(System.IO.Path.GetDirectoryName(path)!)
@@ -23,6 +26,9 @@ namespace Editka.Files
             Path = path;
         }
 
+        /// <summary>
+        /// Компилирует всё при помощи dotnet. 
+        /// </summary>
         public void Build(MainForm root)
         {
             if (Path == null)

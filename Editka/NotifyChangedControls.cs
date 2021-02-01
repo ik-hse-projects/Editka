@@ -3,6 +3,9 @@ using System.Windows.Forms;
 
 namespace Editka
 {
+    /// <summary>
+    /// Создаёт Control'ы из NotifyChanged и делает все необходмые подписики на события.
+    /// </summary>
     public static class NotifyChangedControls
     {
         // FIXME: Здесь должны быть слабые ссылки, иначе получается утечка памяти.

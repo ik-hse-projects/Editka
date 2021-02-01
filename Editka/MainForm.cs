@@ -3,8 +3,14 @@ using Editka.Compat;
 
 namespace Editka
 {
+    /// <summary>
+    /// Основная формочка. Содержит всё, необходимое для работы программы.
+    /// </summary>
     public class MainForm : Form
     {
+        /// <summary>
+        /// То состояние, которое сохраняется при перезапуске.
+        /// </summary>
         public State State;
 
         internal MainForm(State state)
@@ -17,7 +23,7 @@ namespace Editka
             FileList = new FileList(this);
             Actions = new Actions(this);
             Autosave.Init(this);
-            Theme = new ColorScheme(this);
+            var theme = new ColorScheme(this);
             OpenedTabs = new Tabs(this)
             {
                 Dock = DockStyle.Fill
@@ -27,7 +33,7 @@ namespace Editka
                 Dock = DockStyle.Fill
             };
 
-            Theme.ApplyTo(this);
+            theme.ApplyTo(this);
             State.FillFileList(this);
 
             Closing += Actions.Exit;
@@ -52,16 +58,34 @@ namespace Editka
             this.SetContent(MenuCreator.MainMenu(this), container1);
         }
 
+        /// <summary>
+        /// Всевозможные настраиваемые параметры.
+        /// </summary>
         public Settings Settings => State.Settings;
+        
+        /// <summary>
+        /// Всевозможные действия, которые может пожелать сделать пользователь.
+        /// </summary>
         public Actions Actions { get; }
 
+        /// <summary>
+        /// Вкладки, открытые на данный момент.
+        /// </summary>
         public Tabs OpenedTabs { get; }
+        
+        /// <summary>
+        /// Файл, который на данный момент сфокусирован.
+        /// </summary>
         public FileView? CurrentFile => OpenedTabs.SelectedTab;
 
+        /// <summary>
+        /// Список откртых файлов.
+        /// </summary>
         public FileList FileList { get; }
 
-        public ColorScheme Theme { get; }
-
+        /// <summary>
+        /// Панелька для важной информации.
+        /// </summary>
         public Notes Notes { get; }
     }
 }

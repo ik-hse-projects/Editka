@@ -1,11 +1,15 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Drawing;
 using System.Windows.Forms;
 using System.Xml.Serialization;
 
 namespace Editka
 {
+    /// <summary>
+    /// Альтернативная реализация <seealso cref="System.Drawing.Color"/>, но которая нормально сериализуется.
+    /// </summary>
     public struct SerializableColor
     {
         [XmlIgnore] public Color Color;
@@ -17,8 +21,16 @@ namespace Editka
         }
     }
 
+    /// <summary>
+    /// Все настройки программы.
+    /// </summary>
+    // Этот класс активно сериализуектся и десериализуется, поэтому нельзя делать readonly.
+    [SuppressMessage("ReSharper", "FieldCanBeMadeReadOnly.Global")]
     public class Settings
     {
+        /// <summary>
+        /// Хоткеи по-умолчанию.
+        /// </summary>
         private static readonly IReadOnlyDictionary<string, Shortcut> DefaultShortcuts =
             new Dictionary<string, Shortcut>
             {
@@ -38,18 +50,37 @@ namespace Editka
                 {"strikethrough", Shortcut.CtrlT}
             };
 
-        public readonly NotifyChanged<bool> EnableHistory = new NotifyChanged<bool>();
+        /// <summary>
+        /// Период автосохранения.
+        /// </summary>
         public NotifyChanged<int> AutosaveSeconds = new NotifyChanged<int>();
 
+        /// <summary>
+        /// Различные цвета программы.
+        /// </summary>
         public NotifiableDictionary<string, SerializableColor> Colors =
             new NotifiableDictionary<string, SerializableColor>();
 
+        /// <summary>
+        /// Путь к csc.exe
+        /// </summary>
         public NotifyChanged<string?> CscPath = new NotifyChanged<string?>();
 
+        /// <summary>
+        /// Путь к dotnet.exe
+        /// </summary>
         public NotifyChanged<string?> DotnetPath = new NotifyChanged<string?>();
+        
+        /// <summary>
+        /// Настроенные хоткеи.
+        /// </summary>
         public NotifiableDictionary<string, Shortcut> Hotkeys = new NotifiableDictionary<string, Shortcut>();
-        public NotifyChanged<bool> SaveOnFocus = new NotifyChanged<bool>();
 
+        /// <summary>
+        /// Привязывает хоткей к данному пункту меню.
+        /// </summary>
+        /// <param name="name">Имя действия.</param>
+        /// <param name="item">Пункт меню.</param>
         public void BindShortcut(string name, MenuItem item)
         {
             item.ShowShortcut = true;

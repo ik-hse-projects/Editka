@@ -1,5 +1,8 @@
 namespace Editka.Files
 {
+    /// <summary>
+    /// .txt файл.
+    /// </summary>
     public class Plain : OpenedFile
     {
         public Plain(string path) : base(path)
@@ -11,10 +14,5 @@ namespace Editka.Files
         }
 
         public override FileKind Kind => FileKind.Plain;
-
-        protected override string SuggestedExtension()
-        {
-            return ".txt";
-        }
     }
 }

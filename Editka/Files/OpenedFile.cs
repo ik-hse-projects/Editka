@@ -5,13 +5,16 @@ using System.Windows.Forms;
 namespace Editka.Files
 {
     /// <summary>
-    /// TODO: Дока
+    /// Файл с текстом. Либо код, либо rtf, либо что ещё.
     /// </summary>
     /// <remarks>
     /// Если забыть Dispose — будет плохо. Пользователь будет недоволен. Не надо так.
     /// </remarks>
     public abstract class OpenedFile : BaseNode, IDisposable
     {
+        /// <summary>
+        /// View, в котором сейчас открыт файл, если он открыт.
+        /// </summary>
         public FileView? Opened;
 
         /// <summary>
@@ -31,8 +34,23 @@ namespace Editka.Files
         {
         }
 
+        /// <summary>
+        /// Открытый FileStream, если такой есть.
+        /// </summary>
         private FileStream? File { get; set; }
+
+        /// <summary>
+        /// Тип этого файла.
+        /// </summary>
         public abstract FileKind Kind { get; }
+
+        private string SuggestedExtension => Kind switch
+        {
+            FileKind.Plain => ".txt",
+            FileKind.Rtf => ".rtf",
+            FileKind.CSharp => ".cs",
+            _ => ".txt"
+        };
 
         public void Dispose()
         {
@@ -40,8 +58,9 @@ namespace Editka.Files
             File = null;
         }
 
-        protected abstract string SuggestedExtension();
-
+        /// <summary>
+        /// Переносит текст из файла в TextBox.
+        /// </summary>
         public void FillTextbox(TextboxWrapper textBox)
         {
             textBox.Clear();
@@ -63,6 +82,9 @@ namespace Editka.Files
             }
         }
 
+        /// <summary>
+        /// Переносит текст из TextBox в файл.
+        /// </summary>
         public bool LoadTextbox(TextboxWrapper textBox, bool ask = false)
         {
             var file = GetFile(ask);
@@ -85,11 +107,15 @@ namespace Editka.Files
             }
         }
 
+        /// <summary>
+        /// Спрашивает у пользователя путь к файлу.
+        /// </summary>
+        /// <returns></returns>
         private string? AskPath()
         {
             var dialog = new OpenFileDialog
             {
-                DefaultExt = SuggestedExtension(),
+                DefaultExt = SuggestedExtension,
                 AddExtension = true,
                 CheckFileExists = false,
                 CheckPathExists = true,
@@ -105,6 +131,10 @@ namespace Editka.Files
             return null;
         }
 
+        /// <summary>
+        /// Возвращает путь к файлу.
+        /// </summary>
+        /// <param name="ask">Спрашивать ли у пользователя, если путь ещё не установлен.</param>
         protected string? GetPath(bool ask)
         {
             if (Path != null)
@@ -127,6 +157,10 @@ namespace Editka.Files
             return Path;
         }
 
+        /// <summary>
+        /// Возвращает FileStream. При необходимости спрашивает у пользователя путь к файлу и открывает сам файл.
+        /// </summary>
+        /// <param name="ask">Спрашивать ли что-либо у пользователя.</param>
         private FileStream? GetFile(bool ask)
         {
             if (File != null)

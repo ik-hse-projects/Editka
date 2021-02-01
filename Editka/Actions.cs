@@ -63,14 +63,9 @@ namespace Editka
         {
             var dialog = MessageBox.Show("Использовать возможности RTF? Иначе будет создан обычный текстовый файл.",
                 "Новый файл", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-            if (dialog == DialogResult.Yes)
-            {
-                _root.FileList.TreeView.Nodes.Add(new Rich());
-            }
-            else
-            {
-                _root.FileList.TreeView.Nodes.Add(new Plain());
-            }
+            var file = dialog == DialogResult.Yes ? (OpenedFile) new Rich() : new Plain();
+            _root.FileList.TreeView.Nodes.Add(file);
+            _root.OpenedTabs.Open(file);
         }
 
         public void Open(object sender, EventArgs e)
@@ -84,6 +79,10 @@ namespace Editka
             if (file != null)
             {
                 _root.FileList.TreeView.Nodes.Add(file);
+                if (file is OpenedFile openedFile)
+                {
+                    _root.OpenedTabs.Open(openedFile);
+                }
             }
         }
 
@@ -209,7 +208,7 @@ namespace Editka
 
         public MainForm NewWindow()
         {
-            var window = new MainForm(_root.State.Clone());
+            var window = new MainForm(_root.State.CloneSettings());
             MultiFormContext.Context.AddForm(window);
             return window;
         }

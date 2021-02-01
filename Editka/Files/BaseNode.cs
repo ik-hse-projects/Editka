@@ -5,24 +5,31 @@ using System.Xml.Serialization;
 
 namespace Editka.Files
 {
+    /// <summary>
+    /// Узел дерева файлов: файл или директория.
+    /// </summary>
     public abstract class BaseNode : TreeNode
     {
-        private static int counter;
+        /// <summary>
+        /// Имя файла.
+        /// </summary>
+        public readonly Computed<string> Filename;
 
-        [XmlIgnore] public readonly Computed<string> Filename;
-
-        public readonly int Id;
-
+        /// <summary>
+        /// backing field для <see cref="Path"/>.
+        /// </summary>
         private string? _path;
 
         protected BaseNode()
         {
-            Id = counter++;
             Filename = new Computed<string>(() => Path ?? "(untitled)");
             Filename.Changed += (oldValue, newValue) => Text = newValue;
             Text = Filename.Value;
         }
 
+        /// <summary>
+        /// Путь к файлу/директории, если он вообще есть.
+        /// </summary>
         public string? Path
         {
             get => _path;
@@ -33,7 +40,10 @@ namespace Editka.Files
             }
         }
 
-        public static bool IsKnownExtension(string extension)
+        /// <summary>
+        /// Проверка, поддерживается ли расширение программой.
+        /// </summary>
+        protected static bool IsKnownExtension(string extension)
         {
             return extension switch
             {
@@ -44,6 +54,10 @@ namespace Editka.Files
             };
         }
 
+        /// <summary>
+        /// Открывает файл/директорию. Если происзходит ошибка, то возвращает null.
+        /// </summary>
+        /// <param name="silent">Если true, то не будут выводиться никакие сообщения пользователю.</param>
         public static BaseNode? Open(string path, bool silent = false)
         {
             try
@@ -79,7 +93,7 @@ namespace Editka.Files
         /// <summary>
         /// При помощи диалога запрашивает у пользователя путь к файлу и пытается его открыть.
         /// </summary>
-        /// <returns>TreeNode, если всё прошло удачно, иначе null.</returns>
+        /// <returns>BaseNode, если всё прошло удачно, иначе null.</returns>
         public static BaseNode? AskOpen()
         {
             using var dialog = new OpenFileDialog
@@ -98,6 +112,9 @@ namespace Editka.Files
             return null;
         }
 
+        /// <summary>
+        /// Спршивает у пользователю путь к директории и открывает её.
+        /// </summary>
         public static BaseNode? AskDirectory()
         {
             using var dialog = new FolderBrowserDialog();

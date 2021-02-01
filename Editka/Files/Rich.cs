@@ -1,5 +1,8 @@
 namespace Editka.Files
 {
+    /// <summary>
+    /// .rtf файл.
+    /// </summary>
     public class Rich : OpenedFile
     {
         public Rich(string path) : base(path)
@@ -11,10 +14,5 @@ namespace Editka.Files
         }
 
         public override FileKind Kind => FileKind.Rtf;
-
-        protected override string SuggestedExtension()
-        {
-            return ".rtf";
-        }
     }
 }

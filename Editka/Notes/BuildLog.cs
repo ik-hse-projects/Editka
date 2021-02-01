@@ -4,6 +4,9 @@ using System.Windows.Forms;
 
 namespace Editka
 {
+    /// <summary>
+    /// Лог компиляции.
+    /// </summary>
     public class BuildLog : TabPage
     {
         private readonly TextBox _output;
@@ -22,11 +25,19 @@ namespace Editka
             Controls.Add(_output);
         }
 
-        public void SetLog(string output)
+        /// <summary>
+        /// Отображает лог пользователю.
+        /// </summary>
+        private void SetLog(string output)
         {
             _output.Text = output;
         }
 
+        /// <summary>
+        /// Запукскает компиляцию.
+        /// </summary>
+        /// <param name="path">Путь к файлу, который надо собрать.</param>
+        /// <param name="builder">Имя компилятора: csc или dotnet.</param>
         public void DoBuild(string path, string builder)
         {
             string? compiler;

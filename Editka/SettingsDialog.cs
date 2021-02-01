@@ -3,6 +3,9 @@ using System.Windows.Forms;
 
 namespace Editka
 {
+    /// <summary>
+    /// Диалог настроек.
+    /// </summary>
     public class SettingsDialog : Form
     {
         public SettingsDialog(MainForm root)
@@ -127,6 +130,12 @@ namespace Editka
             });
         }
 
+        /// <summary>
+        /// Создаёт вопрос с преложением установить некоторый параметр.
+        /// Если пользователь соглашается, то открывает диалог настроек и блокируется до закрытия.
+        /// </summary>
+        /// <param name="message">Сообщение к пользователю.</param>
+        /// <returns>true, если пользователь согласился.</returns>
         public bool AskOpen(string message)
         {
             var result = MessageBox.Show(message, "Требуется настройка", MessageBoxButtons.OKCancel);

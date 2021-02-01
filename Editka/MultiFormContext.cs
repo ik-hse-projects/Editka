@@ -4,30 +4,38 @@ using System.Windows.Forms;
 
 namespace Editka
 {
-    // https://stackoverflow.com/a/15301089
+    /// <summary>
+    /// Класс помогает открывать сразу несколько независимых окон в одном процессе.
+    /// Подробнее: https://stackoverflow.com/a/15301089
+    /// </summary>
     public class MultiFormContext : ApplicationContext
     {
+        /// <summary>
+        /// Этот класс — синглтон в этой программе.
+        /// </summary>
         public static MultiFormContext Context;
 
+        /// <summary>
+        /// Число открытых на данный момент форм.
+        /// </summary>
         private int openForms;
 
-        public MultiFormContext(params MainForm[] forms)
-        {
-            foreach (var form in forms)
-            {
-                AddForm(form);
-            }
-        }
-
+        /// <summary>
+        /// Точка входа!
+        /// </summary>
         [STAThread]
         public static void Main()
         {
             var initialState = State.DeserializeLatest() ?? new State();
-            Context = new MultiFormContext(new MainForm(initialState));
+            Context = new MultiFormContext();
+            Context.AddForm(new MainForm(initialState));
             Application.EnableVisualStyles();
             Application.Run(Context);
         }
 
+        /// <summary>
+        /// Добавляет и открывает формочку.
+        /// </summary>
         public void AddForm(MainForm form)
         {
             openForms++;
