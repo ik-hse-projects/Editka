@@ -1,11 +1,11 @@
-using System;
 using System.Windows.Forms;
-using Editka.Compat;
 
 namespace Editka
 {
     public static class MenuCreator
     {
+        private static MenuItem[]? _formatButtons;
+
         public static MainMenu MainMenu(MainForm root)
         {
             var menu = new MainMenu();
@@ -66,8 +66,6 @@ namespace Editka
             return menu;
         }
 
-        private static MenuItem[]? _formatButtons;
-
         private static void AddFormatButtons(Menu.MenuItemCollection items, MainForm root)
         {
             var formatButtons = new[]
@@ -75,7 +73,7 @@ namespace Editka
                 new MenuItem("Жирный", root.Actions.Bold),
                 new MenuItem("Курсив", root.Actions.Cursive),
                 new MenuItem("Подчеркнутый", root.Actions.Underline),
-                new MenuItem("Зачёркнтуый", root.Actions.Strikethrough),
+                new MenuItem("Зачёркнтуый", root.Actions.Strikethrough)
             };
 
             if (_formatButtons == null)

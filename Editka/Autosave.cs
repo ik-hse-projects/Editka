@@ -1,4 +1,3 @@
-using System;
 using System.Windows.Forms;
 using Timer = System.Timers.Timer;
 
@@ -6,16 +5,16 @@ namespace Editka
 {
     public class Autosave
     {
-        private MainForm _root;
-        private Timer _timer;
+        private readonly MainForm _root;
         private bool _running;
+        private readonly Timer _timer;
 
         private Autosave(MainForm root)
         {
             _root = root;
             _timer = new Timer
             {
-                AutoReset = true,
+                AutoReset = true
             };
             UpdateTimer(_root.Settings.AutosaveSeconds.Value);
             _root.Settings.AutosaveSeconds.Changed += (_, newValue) => UpdateTimer(newValue);
@@ -54,7 +53,7 @@ namespace Editka
                 _running = true;
                 if (_root.IsHandleCreated)
                 {
-                    _root.Invoke((MethodInvoker) delegate { _root.Actions.SaveAll(ask: false); });
+                    _root.Invoke((MethodInvoker) delegate { _root.Actions.SaveAll(false); });
                 }
             }
             finally

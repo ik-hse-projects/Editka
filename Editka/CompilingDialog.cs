@@ -23,7 +23,7 @@ namespace Editka
                 WindowStyle = ProcessWindowStyle.Normal,
                 RedirectStandardOutput = true,
                 RedirectStandardError = true,
-                WorkingDirectory = workdir,
+                WorkingDirectory = workdir
             },
             EnableRaisingEvents = true
         })
@@ -46,7 +46,7 @@ namespace Editka
                     new ProgressBar
                     {
                         Dock = DockStyle.Top,
-                        Style = ProgressBarStyle.Marquee,
+                        Style = ProgressBarStyle.Marquee
                     },
                     cancel
                 }
@@ -61,7 +61,7 @@ namespace Editka
                 {
                 }
             };
-            process.Exited += (sender, args) => this.Invoke((MethodInvoker)(() => Close()));
+            process.Exited += (sender, args) => Invoke((MethodInvoker) (() => Close()));
         }
 
         public void Start()
@@ -75,6 +75,7 @@ namespace Editka
                 MessageBox.Show($"Невозможно запустить процесс: {e}");
                 return;
             }
+
             ShowDialog();
         }
     }

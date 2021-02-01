@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -13,14 +12,14 @@ namespace Editka.Files
         public OpenedDirectory(string root)
         {
             Path = root;
-            
+
             directories.Add(root, this);
             foreach (var path in Directory
                 .EnumerateFiles(root, "*.*", SearchOption.AllDirectories)
                 .Where(f => IsKnownExtension(System.IO.Path.GetExtension(f))))
             {
                 var dir = GetDirFor(path);
-                var opened = Open(path, silent: true);
+                var opened = Open(path, true);
                 if (opened != null)
                 {
                     dir.Nodes.Add(opened);

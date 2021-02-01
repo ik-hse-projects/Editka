@@ -1,17 +1,14 @@
-using System;
-using System.Drawing;
 using System.Windows.Forms;
 using Editka.Files;
-using FastColoredTextBoxNS;
 
 namespace Editka
 {
     public class FileView : TabPage
     {
-        private MainForm _root;
+        private readonly MainForm _root;
+        public NotifyChanged<bool> Changed = new NotifyChanged<bool>(false);
         public OpenedFile File;
         public TextboxWrapper TextBox;
-        public NotifyChanged<bool> Changed = new NotifyChanged<bool>(false);
 
         public FileView(MainForm root, OpenedFile openedFile)
         {

@@ -1,11 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.IO;
 using System.Windows.Forms;
-using System.Xml;
 using System.Xml.Serialization;
-using Editka.Compat;
 
 namespace Editka
 {
@@ -22,15 +19,6 @@ namespace Editka
 
     public class Settings
     {
-        public NotifiableDictionary<string, SerializableColor> Colors = new NotifiableDictionary<string, SerializableColor>();
-        public NotifyChanged<int> AutosaveSeconds = new NotifyChanged<int>();
-        public NotifyChanged<bool> SaveOnFocus = new NotifyChanged<bool>();
-        public readonly NotifyChanged<bool> EnableHistory = new NotifyChanged<bool>();
-        public NotifiableDictionary<string, Shortcut> Hotkeys = new NotifiableDictionary<string, Shortcut>();
-
-        public NotifyChanged<string?> DotnetPath = new NotifyChanged<string?>();
-        public NotifyChanged<string?> CscPath = new NotifyChanged<string?>();
-
         private static readonly IReadOnlyDictionary<string, Shortcut> DefaultShortcuts =
             new Dictionary<string, Shortcut>
             {
@@ -47,8 +35,20 @@ namespace Editka
                 {"bold", Shortcut.CtrlB},
                 {"cursive", Shortcut.CtrlI},
                 {"underline", Shortcut.CtrlU},
-                {"strikethrough", Shortcut.CtrlT},
+                {"strikethrough", Shortcut.CtrlT}
             };
+
+        public readonly NotifyChanged<bool> EnableHistory = new NotifyChanged<bool>();
+        public NotifyChanged<int> AutosaveSeconds = new NotifyChanged<int>();
+
+        public NotifiableDictionary<string, SerializableColor> Colors =
+            new NotifiableDictionary<string, SerializableColor>();
+
+        public NotifyChanged<string?> CscPath = new NotifyChanged<string?>();
+
+        public NotifyChanged<string?> DotnetPath = new NotifyChanged<string?>();
+        public NotifiableDictionary<string, Shortcut> Hotkeys = new NotifiableDictionary<string, Shortcut>();
+        public NotifyChanged<bool> SaveOnFocus = new NotifyChanged<bool>();
 
         public void BindShortcut(string name, MenuItem item)
         {

@@ -7,7 +7,16 @@ namespace Editka
 {
     public class Tabs : TabControl
     {
-        private MainForm _root;
+        private readonly MainForm _root;
+
+        public Tabs(MainForm root)
+        {
+            _root = root;
+
+            // https://stackoverflow.com/q/47175493
+            MouseClick += OnMouseEventHandler;
+        }
+
         public IEnumerable<FileView> FileTabs => TabPages.OfType<FileView>();
 
         public new FileView? SelectedTab
@@ -26,14 +35,6 @@ namespace Editka
             }
 
             SelectedTab = openedFile.Opened;
-        }
-
-        public Tabs(MainForm root)
-        {
-            _root = root;
-
-            // https://stackoverflow.com/q/47175493
-            MouseClick += OnMouseEventHandler;
         }
 
         private void OnMouseEventHandler(object sender, MouseEventArgs click)

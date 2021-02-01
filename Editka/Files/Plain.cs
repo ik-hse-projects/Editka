@@ -1,7 +1,3 @@
-using System;
-using System.IO;
-using System.Windows.Forms;
-
 namespace Editka.Files
 {
     public class Plain : OpenedFile
@@ -16,6 +12,9 @@ namespace Editka.Files
 
         public override FileKind Kind => FileKind.Plain;
 
-        protected override string SuggestedExtension() => ".txt";
+        protected override string SuggestedExtension()
+        {
+            return ".txt";
+        }
     }
 }

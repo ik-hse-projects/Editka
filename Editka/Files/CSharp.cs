@@ -7,9 +7,13 @@ namespace Editka.Files
         }
 
         public override FileKind Kind => FileKind.CSharp;
-        protected override string SuggestedExtension() => ".cs";
 
         public Solution? Solution { get; set; }
+
+        protected override string SuggestedExtension()
+        {
+            return ".cs";
+        }
 
         public void Build(MainForm root)
         {
@@ -18,6 +22,7 @@ namespace Editka.Files
             {
                 return;
             }
+
             root.Notes.BuildLog.DoBuild(path, "csc");
         }
     }

@@ -1,5 +1,3 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
@@ -10,11 +8,8 @@ namespace Editka
 {
     public class FileList
     {
-        [XmlIgnore] private MainForm _root;
-
         [XmlIgnore] public readonly TreeView TreeView;
-
-        [XmlIgnore] public IEnumerable<BaseNode> TopNodes => TreeView.Nodes.OfType<BaseNode>(); 
+        [XmlIgnore] private readonly MainForm _root;
 
         // For xml serialization. Do not forget to set _root after.
         private FileList()
@@ -29,7 +24,9 @@ namespace Editka
             _root = root;
         }
 
-        void OnTreeNodeMouseClickEventHandler(object sender, TreeNodeMouseClickEventArgs args)
+        [XmlIgnore] public IEnumerable<BaseNode> TopNodes => TreeView.Nodes.OfType<BaseNode>();
+
+        private void OnTreeNodeMouseClickEventHandler(object sender, TreeNodeMouseClickEventArgs args)
         {
             if (args.Node is OpenedFile openedFile)
             {
@@ -37,7 +34,7 @@ namespace Editka
             }
         }
 
-        void OnNodeMouseClickEventHandler(object sender, TreeNodeMouseClickEventArgs args)
+        private void OnNodeMouseClickEventHandler(object sender, TreeNodeMouseClickEventArgs args)
         {
             if (args.Button == MouseButtons.Right)
             {
@@ -51,7 +48,10 @@ namespace Editka
             }
         }
 
-        public IEnumerable<TreeNode> WalkTree() => WalkTree(TreeView.Nodes);
+        public IEnumerable<TreeNode> WalkTree()
+        {
+            return WalkTree(TreeView.Nodes);
+        }
 
         private IEnumerable<TreeNode> WalkTree(TreeNodeCollection parent)
         {

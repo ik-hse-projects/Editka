@@ -1,4 +1,3 @@
-using System.Diagnostics;
 using System.Linq;
 using System.Windows.Forms;
 
@@ -30,6 +29,7 @@ namespace Editka.Files
             {
                 return;
             }
+
             root.Notes.BuildLog.DoBuild(Path, "dotnet");
         }
     }

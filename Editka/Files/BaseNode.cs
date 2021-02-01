@@ -9,9 +9,19 @@ namespace Editka.Files
     {
         private static int counter;
 
+        [XmlIgnore] public readonly Computed<string> Filename;
+
         public readonly int Id;
 
         private string? _path;
+
+        protected BaseNode()
+        {
+            Id = counter++;
+            Filename = new Computed<string>(() => Path ?? "(untitled)");
+            Filename.Changed += (oldValue, newValue) => Text = newValue;
+            Text = Filename.Value;
+        }
 
         public string? Path
         {
@@ -21,16 +31,6 @@ namespace Editka.Files
                 _path = value;
                 Filename.Update();
             }
-        }
-
-        [XmlIgnore] public readonly Computed<string> Filename;
-
-        protected BaseNode()
-        {
-            Id = counter++;
-            Filename = new Computed<string>(() => Path ?? "(untitled)");
-            Filename.Changed += (oldValue, newValue) => Text = newValue;
-            Text = Filename.Value;
         }
 
         public static bool IsKnownExtension(string extension)
@@ -87,7 +87,7 @@ namespace Editka.Files
                 ValidateNames = true,
                 CheckFileExists = true,
                 CheckPathExists = true,
-                Multiselect = false,
+                Multiselect = false
             };
             var result = dialog.ShowDialog();
             if (result == DialogResult.OK && !string.IsNullOrWhiteSpace(dialog.FileName))

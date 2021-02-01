@@ -1,6 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.Drawing;
 using System.Windows.Forms;
 
 namespace Editka
@@ -14,7 +12,7 @@ namespace Editka
         {
             var result = new NumericUpDown
             {
-                Value = self.Value,
+                Value = self.Value
             };
             result.ValueChanged += (sender, args) => self.Value = (int) result.Value;
             self.Changed += (value, newValue) => result.Value = newValue;
@@ -25,7 +23,7 @@ namespace Editka
         {
             var result = new CheckBox
             {
-                Checked = self.Value,
+                Checked = self.Value
             };
             result.CheckedChanged += (sender, args) => self.Value = result.Checked;
             self.Changed += (value, newValue) => result.Checked = newValue;
@@ -43,7 +41,7 @@ namespace Editka
             {
                 var dialog = new ColorDialog
                 {
-                    Color = self.Value.Color,
+                    Color = self.Value.Color
                 };
                 var result = dialog.ShowDialog();
                 if (result == DialogResult.OK)
@@ -66,7 +64,7 @@ namespace Editka
             }
 
             result.SelectedValueChanged +=
-                (sender, args) => self.Value = (result.SelectedItem as Shortcut?) ?? Shortcut.None;
+                (sender, args) => self.Value = result.SelectedItem as Shortcut? ?? Shortcut.None;
             self.Changed += (oldValue, newValue) => result.SelectedItem = newValue;
             result.SelectedItem = self.Value;
             return result;

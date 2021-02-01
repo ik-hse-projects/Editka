@@ -1,4 +1,3 @@
-using System;
 using System.Drawing;
 using System.Windows.Forms;
 
@@ -11,7 +10,7 @@ namespace Editka
             AutoSize = true;
             var close = new Button
             {
-                Text = "Закрыть",
+                Text = "Закрыть"
             };
             close.Click += (sender, args) => Close();
 
@@ -22,9 +21,9 @@ namespace Editka
                 Location = new Point(5, 15),
                 MaximumSize = new Size(800, 10000),
                 FlowDirection = FlowDirection.LeftToRight,
-                Width = Width,
+                Width = Width
             };
-            SizeChanged += (object sender, EventArgs args) => hotkeys.Width = Width;
+            SizeChanged += (sender, args) => hotkeys.Width = Width;
             foreach (var pair in root.Settings.Hotkeys.Notifiable())
             {
                 hotkeys.Controls.Add(new TableLayoutPanel
@@ -34,7 +33,8 @@ namespace Editka
                     // https://stackoverflow.com/a/30019805
                     BorderStyle = BorderStyle.FixedSingle,
                     ColumnCount = 2,
-                    Controls = {
+                    Controls =
+                    {
                         pair.Value.GetControl(),
                         new Label
                         {
@@ -69,7 +69,7 @@ namespace Editka
                                 Controls =
                                 {
                                     {root.Settings.AutosaveSeconds.GetControl(), 1, 1},
-                                    {new Label {Text = "Интервал автосохранения", AutoSize = true}, 2, 1},
+                                    {new Label {Text = "Интервал автосохранения", AutoSize = true}, 2, 1}
                                 }
                             }
                         }
@@ -91,7 +91,7 @@ namespace Editka
                                     {root.Settings.Colors.Get("background").GetControl(), 1, 1},
                                     {new Label {Text = "Фон", AutoSize = true}, 2, 1},
                                     {root.Settings.Colors.Get("foreground").GetControl(), 1, 2},
-                                    {new Label {Text = "Передний план", AutoSize = true}, 2, 2},
+                                    {new Label {Text = "Передний план", AutoSize = true}, 2, 2}
                                 }
                             }
                         }
@@ -111,7 +111,7 @@ namespace Editka
                                     {root.Settings.CscPath.GetControl(), 1, 1},
                                     {new Label {Text = "csc.exe", AutoSize = true}, 2, 1},
                                     {root.Settings.DotnetPath.GetControl(), 1, 2},
-                                    {new Label {Text = "dotnet.exe", AutoSize = true}, 2, 2},
+                                    {new Label {Text = "dotnet.exe", AutoSize = true}, 2, 2}
                                 }
                             }
                         }
@@ -120,7 +120,7 @@ namespace Editka
                     {
                         Text = "Горячие клавиши",
                         AutoSize = true,
-                        Controls = {hotkeys},
+                        Controls = {hotkeys}
                     },
                     close
                 }

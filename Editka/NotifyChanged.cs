@@ -2,9 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using System.Drawing.Imaging;
 using System.Linq;
-using System.Windows.Forms;
 using System.Xml.Serialization;
 
 namespace Editka
@@ -28,12 +26,21 @@ namespace Editka
     {
         [XmlIgnore] private T _value;
 
+        public NotifyChanged() : this(default)
+        {
+        }
+
+        public NotifyChanged(T value)
+        {
+            _value = value;
+        }
+
         public T Value
         {
             get => _value;
             set
             {
-                if ((_value != null && _value.Equals(value)) || (_value == null && value == null))
+                if (_value != null && _value.Equals(value) || _value == null && value == null)
                 {
                     return;
                 }
@@ -45,21 +52,25 @@ namespace Editka
         }
 
         public event PropertyChanged<T>? Changed;
-
-        public NotifyChanged() : this(default)
-        {
-        }
-
-        public NotifyChanged(T value)
-        {
-            _value = value;
-        }
     }
 
     public class NotifiableDictionary<TKey, TVal> : IEnumerable<KeyValuePair<TKey, TVal>>
     {
         private readonly Dictionary<TKey, NotifyChanged<TVal>>
             _dictionary = new Dictionary<TKey, NotifyChanged<TVal>>();
+
+        public IEnumerator<KeyValuePair<TKey, TVal>> GetEnumerator()
+        {
+            return _dictionary
+                .Select(x => new KeyValuePair<TKey, TVal>(x.Key, x.Value.Value))
+                .ToList()
+                .GetEnumerator();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
+        }
 
         public bool TryGetValue(TKey key, out TVal value)
         {
@@ -77,7 +88,10 @@ namespace Editka
             Get(pair.Key).Value = pair.Value;
         }
 
-        public NotifyChanged<TVal> Get(TKey key) => GetOrDefault(key, default);
+        public NotifyChanged<TVal> Get(TKey key)
+        {
+            return GetOrDefault(key, default);
+        }
 
         public NotifyChanged<TVal> GetOrDefault(TKey key, TVal fallback)
         {
@@ -91,19 +105,11 @@ namespace Editka
             return result;
         }
 
-        public IEnumerator<KeyValuePair<TKey, TVal>> GetEnumerator() =>
-            _dictionary
-                .Select(x => new KeyValuePair<TKey, TVal>(x.Key, x.Value.Value))
-                .ToList()
-                .GetEnumerator();
-
-        IEnumerator IEnumerable.GetEnumerator()
+        public IEnumerable<KeyValuePair<TKey, NotifyChanged<TVal>>> Notifiable()
         {
-            return GetEnumerator();
+            return _dictionary
+                .Select(x => new KeyValuePair<TKey, NotifyChanged<TVal>>(x.Key, x.Value));
         }
-
-        public IEnumerable<KeyValuePair<TKey, NotifyChanged<TVal>>> Notifiable() => _dictionary
-            .Select(x => new KeyValuePair<TKey, NotifyChanged<TVal>>(x.Key, x.Value));
     }
 
     public class Computed<T>
@@ -111,18 +117,18 @@ namespace Editka
         private readonly Func<T> _lambda;
         private readonly NotifyChanged<T> notifyChanged;
 
-        public T Value => notifyChanged.Value;
-
-        public void Update()
-        {
-            notifyChanged.Value = _lambda();
-        }
-
         public Computed(Func<T> lambda)
         {
             _lambda = lambda;
             notifyChanged = new NotifyChanged<T>(lambda());
             notifyChanged.Changed += (oldValue, newValue) => Changed?.Invoke(oldValue, newValue);
+        }
+
+        public T Value => notifyChanged.Value;
+
+        public void Update()
+        {
+            notifyChanged.Value = _lambda();
         }
 
         public event PropertyChanged<T>? Changed;

@@ -1,8 +1,6 @@
 using System;
 using System.IO;
 using System.Windows.Forms;
-using System.Xml.Serialization;
-using FastColoredTextBoxNS;
 
 namespace Editka.Files
 {
@@ -14,7 +12,6 @@ namespace Editka.Files
     /// </remarks>
     public abstract class OpenedFile : BaseNode, IDisposable
     {
-        private FileStream? File { get; set; }
         public FileView? Opened;
 
         /// <summary>
@@ -34,8 +31,16 @@ namespace Editka.Files
         {
         }
 
-        protected abstract string SuggestedExtension();
+        private FileStream? File { get; set; }
         public abstract FileKind Kind { get; }
+
+        public void Dispose()
+        {
+            File?.Dispose();
+            File = null;
+        }
+
+        protected abstract string SuggestedExtension();
 
         public void FillTextbox(TextboxWrapper textBox)
         {
@@ -147,12 +152,6 @@ namespace Editka.Files
             }
 
             return File;
-        }
-
-        public void Dispose()
-        {
-            File?.Dispose();
-            File = null;
         }
     }
 }

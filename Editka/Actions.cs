@@ -4,7 +4,6 @@ using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 using Editka.Files;
-using FastColoredTextBoxNS;
 
 namespace Editka
 {
@@ -55,7 +54,10 @@ namespace Editka
             }
         }
 
-        public void New(object sender, EventArgs e) => New();
+        public void New(object sender, EventArgs e)
+        {
+            New();
+        }
 
         public void New()
         {
@@ -71,7 +73,10 @@ namespace Editka
             }
         }
 
-        public void Open(object sender, EventArgs e) => Open();
+        public void Open(object sender, EventArgs e)
+        {
+            Open();
+        }
 
         public void Open()
         {
@@ -81,7 +86,7 @@ namespace Editka
                 _root.FileList.TreeView.Nodes.Add(file);
             }
         }
-        
+
         public void OpenDirectory(object sender, EventArgs e)
         {
             var dir = BaseNode.AskDirectory();

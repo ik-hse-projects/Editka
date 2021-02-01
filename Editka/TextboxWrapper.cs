@@ -3,7 +3,6 @@ using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
 using FastColoredTextBoxNS;
-using Editka.Compat;
 using Control = Editka.Compat.Control;
 
 namespace Editka
@@ -14,14 +13,11 @@ namespace Editka
         Rtf,
         CSharp
     }
-    
+
     public class TextboxWrapper
     {
-        private readonly RichTextBox? rich;
         private readonly FastColoredTextBox? fast;
-
-        public Control Control => (rich as System.Windows.Forms.Control ?? fast)!;
-        public event EventHandler? TextChanged;
+        private readonly RichTextBox? rich;
 
         public TextboxWrapper(FileKind streamType)
         {
@@ -40,9 +36,12 @@ namespace Editka
                 default:
                     throw new ArgumentOutOfRangeException(nameof(streamType), streamType, null);
             }
-            
+
             Control.TextChanged += (sender, args) => TextChanged?.Invoke(sender, args);
         }
+
+        public Control Control => (rich as System.Windows.Forms.Control ?? fast)!;
+        public event EventHandler? TextChanged;
 
         public void Paste()
         {

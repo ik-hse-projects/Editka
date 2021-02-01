@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Threading;
 using System.Windows.Forms;
 
@@ -10,15 +9,6 @@ namespace Editka
     {
         public static MultiFormContext Context;
 
-        [STAThread]
-        public static void Main()
-        {
-            var initialState = State.DeserializeLatest() ?? new State();
-            Context = new MultiFormContext(new MainForm(initialState));
-            Application.EnableVisualStyles();
-            Application.Run(Context);
-        }
-
         private int openForms;
 
         public MultiFormContext(params MainForm[] forms)
@@ -27,6 +17,15 @@ namespace Editka
             {
                 AddForm(form);
             }
+        }
+
+        [STAThread]
+        public static void Main()
+        {
+            var initialState = State.DeserializeLatest() ?? new State();
+            Context = new MultiFormContext(new MainForm(initialState));
+            Application.EnableVisualStyles();
+            Application.Run(Context);
         }
 
         public void AddForm(MainForm form)

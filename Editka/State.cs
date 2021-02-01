@@ -9,15 +9,15 @@ namespace Editka
 {
     public class State
     {
-        public Settings Settings { get; set; }
-
-        public List<string>? Files { get; set; }
-        public List<string>? OpenedTabs { get; set; }
-
         public State()
         {
             Settings = new Settings();
         }
+
+        public Settings Settings { get; set; }
+
+        public List<string>? Files { get; set; }
+        public List<string>? OpenedTabs { get; set; }
 
         public string? Serialize(MainForm root)
         {
@@ -75,7 +75,7 @@ namespace Editka
             try
             {
                 var root = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "state");
-                for (int i = 0; i < 4; i++)
+                for (var i = 0; i < 4; i++)
                 {
                     // Выбираем наибольшее имя.
                     root = Directory.EnumerateFileSystemEntries(root)

@@ -7,18 +7,6 @@ namespace Editka
     {
         public State State;
 
-        public Settings Settings => State.Settings;
-        public Actions Actions { get; }
-
-        public Tabs OpenedTabs { get; }
-        public FileView? CurrentFile => OpenedTabs.SelectedTab;
-
-        public FileList FileList { get; }
-
-        public ColorScheme Theme { get; }
-
-        public Notes Notes { get; }
-
         internal MainForm(State state)
         {
             // Чтобы хоткеи работали:
@@ -48,7 +36,7 @@ namespace Editka
             {
                 Orientation = Orientation.Vertical,
                 BorderStyle = BorderStyle.Fixed3D,
-                Dock = DockStyle.Fill,
+                Dock = DockStyle.Fill
             };
             var container2 = new SplitContainer
             {
@@ -63,5 +51,17 @@ namespace Editka
 
             this.SetContent(MenuCreator.MainMenu(this), container1);
         }
+
+        public Settings Settings => State.Settings;
+        public Actions Actions { get; }
+
+        public Tabs OpenedTabs { get; }
+        public FileView? CurrentFile => OpenedTabs.SelectedTab;
+
+        public FileList FileList { get; }
+
+        public ColorScheme Theme { get; }
+
+        public Notes Notes { get; }
     }
 }

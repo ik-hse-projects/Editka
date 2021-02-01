@@ -1,23 +1,24 @@
 using System;
-using Forms = System.Windows.Forms;
+using System.Windows.Forms;
 
 namespace Editka.Compat
 {
     public class Control
     {
-        private Forms.Control _self;
+        private readonly System.Windows.Forms.Control _self;
 
-        public Control(Forms.Control self)
+        public Control(System.Windows.Forms.Control self)
         {
             _self = self;
         }
 
-        public Forms.DockStyle Dock
+        public DockStyle Dock
         {
             get => _self.Dock;
             set => _self.Dock = value;
         }
-        public Forms.ContextMenu ContextMenu
+
+        public ContextMenu ContextMenu
         {
             get => _self.ContextMenu;
             set => _self.ContextMenu = value;
@@ -29,13 +30,20 @@ namespace Editka.Compat
             remove => _self.TextChanged -= value;
         }
 
-        public static implicit operator Forms.Control(Control menu) => menu._self;
-        public static implicit operator Control(Forms.Control menu) => new Control(menu);
+        public static implicit operator System.Windows.Forms.Control(Control menu)
+        {
+            return menu._self;
+        }
+
+        public static implicit operator Control(System.Windows.Forms.Control menu)
+        {
+            return new Control(menu);
+        }
     }
-    
+
     public static class MainFormExt
     {
-        public static void SetContent(this MainForm mainForm, Forms.MainMenu menu, Control control)
+        public static void SetContent(this MainForm mainForm, MainMenu menu, Control control)
         {
             mainForm.Menu = menu;
             mainForm.Controls.Add(control);

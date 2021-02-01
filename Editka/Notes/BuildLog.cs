@@ -6,8 +6,8 @@ namespace Editka
 {
     public class BuildLog : TabPage
     {
-        private TextBox _output;
-        private MainForm _root;
+        private readonly TextBox _output;
+        private readonly MainForm _root;
 
         public BuildLog(MainForm root) : base("Компиляция")
         {
@@ -67,6 +67,7 @@ namespace Editka
             {
                 output = "(вывода нет)";
             }
+
             SetLog(output);
         }
     }
