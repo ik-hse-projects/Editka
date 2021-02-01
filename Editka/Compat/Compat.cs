@@ -133,18 +133,6 @@ namespace Editka.Compat
         }
     }
 
-    public class Form : Forms.Form
-    {
-        public MainMenu Menu
-        {
-            get => MainMenuStrip;
-            set {
-                MainMenuStrip = value;
-                Controls.Add(value);
-            }
-        }
-    }
-
     public class Control
     {
         private Forms.Control _self;
