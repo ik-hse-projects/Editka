@@ -174,8 +174,8 @@ namespace Editka.Compat
                 ColumnCount = 1,
                 Controls =
                 {
-                    MainMenuStrip,
-                    container1
+                    menu,
+                    control
                 }
             });
         }
