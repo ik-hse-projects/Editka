@@ -12,6 +12,10 @@ namespace Editka
     /// </summary>
     public class State
     {
+        // Все поля должны быть публичными, иначе XmlSerializer __молча__ их не сериализует.
+        //     (полтора часа до дедлайна, а я пытаюсь найти почему оно не работает...)
+        // Ну и конструктор без параметров тоже важен.
+
         public State()
         {
             Settings = new Settings();
@@ -25,12 +29,14 @@ namespace Editka
         /// <summary>
         /// Список путей к открытым файлам.
         /// </summary>
-        private List<string>? Files { get; set; }
+        // ReSharper disable once MemberCanBePrivate.Global
+        public List<string>? Files { get; set; }
 
         /// <summary>
         /// Список путей к файлам, которые открыты как вкладки.
         /// </summary>
-        private List<string>? OpenedTabs { get; set; }
+        // ReSharper disable once MemberCanBePrivate.Global
+        public List<string>? OpenedTabs { get; set; }
 
         /// <summary>
         /// Сохраняет состояние на диск.
