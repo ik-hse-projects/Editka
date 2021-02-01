@@ -12,4 +12,8 @@
         <AssemblyName>Fracta</AssemblyName>
     </PropertyGroup>
 
+    <ItemGroup>
+      <PackageReference Include="FCTB" Version="2.16.24" />
+    </ItemGroup>
+
 </Project>

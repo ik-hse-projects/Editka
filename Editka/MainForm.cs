@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
-using System.Xml.Serialization;
 
 namespace Editka
 {
-    public class MainForm : Form
+    public class MainForm : Compat.Form
     {
         public State State;
 

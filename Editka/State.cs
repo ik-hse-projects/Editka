@@ -16,6 +16,7 @@ namespace Editka
 
         public State()
         {
+            Settings = new Settings();
         }
 
         public string? Serialize(MainForm root)
