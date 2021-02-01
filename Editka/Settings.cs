@@ -38,6 +38,7 @@ namespace Editka
                 {"save_all", Shortcut.CtrlShiftS},
                 {"open", Shortcut.CtrlO},
                 {"new", Shortcut.CtrlN},
+                {"create_in_new", Shortcut.CtrlShiftN},
                 {"exit", Shortcut.CtrlQ},
                 {"undo", Shortcut.CtrlZ},
                 {"redo", Shortcut.CtrlShiftZ},

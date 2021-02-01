@@ -70,15 +70,17 @@ namespace Editka
 
         private static void AddFormatButtons(Menu.MenuItemCollection items, MainForm root)
         {
+            var formatButtons = new[]
+            {
+                new MenuItem("Жирный", root.Actions.Bold),
+                new MenuItem("Курсив", root.Actions.Cursive),
+                new MenuItem("Подчеркнутый", root.Actions.Underline),
+                new MenuItem("Зачёркнтуый", root.Actions.Strikethrough),
+            };
+
             if (_formatButtons == null)
             {
-                _formatButtons = new[]
-                {
-                    new MenuItem("Жирный", root.Actions.Bold),
-                    new MenuItem("Курсив", root.Actions.Cursive),
-                    new MenuItem("Подчеркнутый", root.Actions.Underline),
-                    new MenuItem("Зачёркнтуый", root.Actions.Strikethrough),
-                };
+                _formatButtons = formatButtons;
 
                 root.Settings.BindShortcut("bold", _formatButtons[0]);
                 root.Settings.BindShortcut("cursive", _formatButtons[1]);
@@ -86,7 +88,7 @@ namespace Editka
                 root.Settings.BindShortcut("strikethrough", _formatButtons[3]);
             }
 
-            items.AddRange(_formatButtons);
+            items.AddRange(formatButtons);
         }
     }
 }
