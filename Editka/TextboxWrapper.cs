@@ -3,6 +3,8 @@ using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
 using FastColoredTextBoxNS;
+using Editka.Compat;
+using Control = Editka.Compat.Control;
 
 namespace Editka
 {
@@ -18,7 +20,7 @@ namespace Editka
         private readonly RichTextBox? rich;
         private readonly FastColoredTextBox? fast;
 
-        public Control Control => (rich as Control ?? fast)!;
+        public Control Control => (rich as System.Windows.Forms.Control ?? fast)!;
         public event EventHandler? TextChanged;
 
         public TextboxWrapper(FileKind streamType)

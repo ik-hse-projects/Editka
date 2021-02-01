@@ -57,8 +57,16 @@ namespace Editka
             };
 
             var dialog = new CompilingDialog(compiler, Path.GetDirectoryName(path), args);
-            dialog.ShowDialog();
-            var output = dialog.Process.StandardOutput.ReadToEnd();
+            dialog.Start();
+            string output;
+            try
+            {
+                output = dialog.Process.StandardOutput.ReadToEnd();
+            }
+            catch
+            {
+                output = "(вывода нет)";
+            }
             SetLog(output);
         }
     }

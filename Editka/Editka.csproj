@@ -12,4 +12,12 @@
         <AssemblyName>Fracta</AssemblyName>
     </PropertyGroup>
 
+    <ItemGroup>
+      <PackageReference Include="FCTB" Version="2.16.24" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <Compile Remove="Compat/Framework.cs" />
+    </ItemGroup>
+
 </Project>

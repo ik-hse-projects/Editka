@@ -5,6 +5,7 @@ using System.IO;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.Serialization;
+using Editka.Compat;
 
 namespace Editka
 {
@@ -37,12 +38,11 @@ namespace Editka
                 {"save_all", Shortcut.CtrlShiftS},
                 {"open", Shortcut.CtrlO},
                 {"new", Shortcut.CtrlN},
+                {"create_in_new", Shortcut.CtrlShiftN},
                 {"exit", Shortcut.CtrlQ},
                 {"undo", Shortcut.CtrlZ},
                 {"redo", Shortcut.CtrlShiftZ},
-                {"format", Shortcut.CtrlL},
                 {"build", Shortcut.CtrlF9},
-                {"run", Shortcut.CtrlShiftF9},
                 {"settings", Shortcut.CtrlShiftP},
                 {"bold", Shortcut.CtrlB},
                 {"cursive", Shortcut.CtrlI},

@@ -1,3 +1,4 @@
+using System;
 using System.Drawing;
 using System.Windows.Forms;
 
@@ -14,21 +15,34 @@ namespace Editka
             };
             close.Click += (sender, args) => Close();
 
-            var hotkeys = new TableLayoutPanel
+            var hotkeys = new FlowLayoutPanel
             {
                 AutoSize = true,
+                AutoSizeMode = AutoSizeMode.GrowAndShrink,
                 Location = new Point(5, 15),
+                MaximumSize = new Size(800, 10000),
+                FlowDirection = FlowDirection.LeftToRight,
+                Width = Width,
             };
-            int row = 1;
+            SizeChanged += (object sender, EventArgs args) => hotkeys.Width = Width;
             foreach (var pair in root.Settings.Hotkeys.Notifiable())
             {
-                hotkeys.Controls.Add(pair.Value.GetControl(), 1, row);
-                hotkeys.Controls.Add(new Label
+                hotkeys.Controls.Add(new TableLayoutPanel
                 {
-                    Text = pair.Key,
-                    AutoSize = true
-                }, 2, row);
-                row++;
+                    AutoSize = true,
+                    AutoSizeMode = AutoSizeMode.GrowAndShrink,
+                    // https://stackoverflow.com/a/30019805
+                    BorderStyle = BorderStyle.FixedSingle,
+                    ColumnCount = 2,
+                    Controls = {
+                        pair.Value.GetControl(),
+                        new Label
+                        {
+                            Text = pair.Key,
+                            AutoSize = true
+                        }
+                    }
+                });
             }
 
             Controls.Add(new FlowLayoutPanel
@@ -38,6 +52,7 @@ namespace Editka
                 WrapContents = false,
                 Dock = DockStyle.Fill,
                 AutoSize = true,
+                AutoSizeMode = AutoSizeMode.GrowAndShrink,
                 Controls =
                 {
                     new GroupBox
@@ -49,23 +64,12 @@ namespace Editka
                             new TableLayoutPanel
                             {
                                 AutoSize = true,
+                                AutoSizeMode = AutoSizeMode.GrowAndShrink,
                                 Location = new Point(5, 15),
                                 Controls =
                                 {
                                     {root.Settings.AutosaveSeconds.GetControl(), 1, 1},
                                     {new Label {Text = "Интервал автосохранения", AutoSize = true}, 2, 1},
-                                    {root.Settings.SaveOnFocus.GetControl(), 1, 2},
-                                    {new Label {Text = "Сохранять при смене фокуса", AutoSize = true}, 2, 2},
-                                    {root.Settings.EnableHistory.GetControl(), 1, 3},
-                                    {
-                                        new Label
-                                        {
-                                            Text =
-                                                "Включить журналирование (работает лучше всего в паре с автосохранением)",
-                                            AutoSize = true
-                                        },
-                                        2, 3
-                                    },
                                 }
                             }
                         }
@@ -74,11 +78,13 @@ namespace Editka
                     {
                         Text = "Цвета",
                         AutoSize = true,
+                        AutoSizeMode = AutoSizeMode.GrowAndShrink,
                         Controls =
                         {
                             new TableLayoutPanel
                             {
                                 AutoSize = true,
+                                AutoSizeMode = AutoSizeMode.GrowAndShrink,
                                 Location = new Point(5, 15),
                                 Controls =
                                 {

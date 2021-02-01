@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -50,9 +51,31 @@ namespace Editka
                     cancel
                 }
             });
-            cancel.Click += (sender, args) => process.Kill();
-            process.Exited += (sender, args) => Close();
-            process.Start();
+            cancel.Click += (sender, args) =>
+            {
+                try
+                {
+                    process.Kill();
+                }
+                catch
+                {
+                }
+            };
+            process.Exited += (sender, args) => this.Invoke((MethodInvoker)(() => Close()));
+        }
+
+        public void Start()
+        {
+            try
+            {
+                Process.Start();
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show($"Невозможно запустить процесс: {e}");
+                return;
+            }
+            ShowDialog();
         }
     }
 }

@@ -72,7 +72,7 @@ namespace Editka
             return result;
         }
 
-        public static TextBox GetControl(this NotifyChanged<string> self)
+        public static TextBox GetControl(this NotifyChanged<string?> self)
         {
             var result = new TextBox {Text = self.Value};
             result.TextChanged += (sender, args) => self.Value = result.Text;

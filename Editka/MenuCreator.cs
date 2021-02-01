@@ -1,5 +1,6 @@
 using System;
 using System.Windows.Forms;
+using Editka.Compat;
 
 namespace Editka
 {
@@ -40,9 +41,7 @@ namespace Editka
 
             {
                 var csharp = new MenuItem("C#");
-                root.Settings.BindShortcut("format", csharp.MenuItems.Add("Отформатировать", root.Actions.Format));
                 root.Settings.BindShortcut("build", csharp.MenuItems.Add("Скомпилировать", root.Actions.Build));
-                root.Settings.BindShortcut("run", csharp.MenuItems.Add("Запустить", root.Actions.Run));
                 menu.MenuItems.Add(csharp);
             }
 
@@ -71,15 +70,17 @@ namespace Editka
 
         private static void AddFormatButtons(Menu.MenuItemCollection items, MainForm root)
         {
+            var formatButtons = new[]
+            {
+                new MenuItem("Жирный", root.Actions.Bold),
+                new MenuItem("Курсив", root.Actions.Cursive),
+                new MenuItem("Подчеркнутый", root.Actions.Underline),
+                new MenuItem("Зачёркнтуый", root.Actions.Strikethrough),
+            };
+
             if (_formatButtons == null)
             {
-                _formatButtons = new[]
-                {
-                    new MenuItem("Жирный", root.Actions.Bold),
-                    new MenuItem("Курсив", root.Actions.Cursive),
-                    new MenuItem("Подчеркнутый", root.Actions.Underline),
-                    new MenuItem("Зачёркнтуый", root.Actions.Strikethrough),
-                };
+                _formatButtons = formatButtons;
 
                 root.Settings.BindShortcut("bold", _formatButtons[0]);
                 root.Settings.BindShortcut("cursive", _formatButtons[1]);
@@ -87,7 +88,7 @@ namespace Editka
                 root.Settings.BindShortcut("strikethrough", _formatButtons[3]);
             }
 
-            items.AddRange(_formatButtons);
+            items.AddRange(formatButtons);
         }
     }
 }
