@@ -152,11 +152,6 @@ namespace Editka
             }
         }
 
-        public void Run(object sender, EventArgs e)
-        {
-            throw new NotImplementedException();
-        }
-
         public void Settings(object sender, EventArgs e)
         {
             new SettingsDialog(_root).ShowDialog(_root);
@@ -180,11 +175,6 @@ namespace Editka
         public void Paste(object sender, EventArgs e)
         {
             _root.CurrentFile?.TextBox.Paste();
-        }
-
-        public void Format(object sender, EventArgs e)
-        {
-            throw new NotImplementedException();
         }
 
         public void Bold(object sender, EventArgs e)

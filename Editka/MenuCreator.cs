@@ -41,9 +41,7 @@ namespace Editka
 
             {
                 var csharp = new MenuItem("C#");
-                root.Settings.BindShortcut("format", csharp.MenuItems.Add("Отформатировать", root.Actions.Format));
                 root.Settings.BindShortcut("build", csharp.MenuItems.Add("Скомпилировать", root.Actions.Build));
-                root.Settings.BindShortcut("run", csharp.MenuItems.Add("Запустить", root.Actions.Run));
                 menu.MenuItems.Add(csharp);
             }
 

@@ -65,7 +65,7 @@ namespace Editka
             {
                 Dock = DockStyle.Fill,
                 ColumnCount = 1,
-                Controls=
+                Controls =
                 {
                     MainMenuStrip,
                     container1
