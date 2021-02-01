@@ -45,12 +45,12 @@ namespace Editka
         public string? Serialize(MainForm root)
         {
             Files = root.FileList.TopNodes
-                .Select(file => file.Path!)
                 .Where(path => path != null)
+                .Select(file => file.Path!)
                 .ToList();
             OpenedTabs = root.OpenedTabs.FileTabs
-                .Select(tab => tab.File.Path)
                 .Where(path => path != null)
+                .Select(tab => tab.File.Path)
                 .ToList();
 
             var serializer = new XmlSerializer(typeof(State));
